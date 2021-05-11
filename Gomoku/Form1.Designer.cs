@@ -33,9 +33,9 @@ namespace Gomoku
             this.button2 = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.gbxStartMenu = new System.Windows.Forms.GroupBox();
+            this.btnExit = new System.Windows.Forms.Button();
             this.btnSettings = new System.Windows.Forms.Button();
             this.btnStartGame = new System.Windows.Forms.Button();
-            this.btnExit = new System.Windows.Forms.Button();
             this.gbxStartMenu.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -82,9 +82,19 @@ namespace Gomoku
             this.gbxStartMenu.TabIndex = 3;
             this.gbxStartMenu.TabStop = false;
             // 
+            // btnExit
+            // 
+            this.btnExit.Location = new System.Drawing.Point(241, 385);
+            this.btnExit.Name = "btnExit";
+            this.btnExit.Size = new System.Drawing.Size(75, 23);
+            this.btnExit.TabIndex = 3;
+            this.btnExit.Text = "Exit";
+            this.btnExit.UseVisualStyleBackColor = true;
+            this.btnExit.Click += new System.EventHandler(this.btnExit_Click);
+            // 
             // btnSettings
             // 
-            this.btnSettings.Location = new System.Drawing.Point(67, 316);
+            this.btnSettings.Location = new System.Drawing.Point(241, 305);
             this.btnSettings.Name = "btnSettings";
             this.btnSettings.Size = new System.Drawing.Size(75, 23);
             this.btnSettings.TabIndex = 3;
@@ -94,23 +104,13 @@ namespace Gomoku
             // 
             // btnStartGame
             // 
-            this.btnStartGame.Location = new System.Drawing.Point(67, 236);
+            this.btnStartGame.Location = new System.Drawing.Point(241, 225);
             this.btnStartGame.Name = "btnStartGame";
             this.btnStartGame.Size = new System.Drawing.Size(75, 23);
             this.btnStartGame.TabIndex = 3;
             this.btnStartGame.Text = "Start Game";
             this.btnStartGame.UseVisualStyleBackColor = true;
             this.btnStartGame.Click += new System.EventHandler(this.btnStartGame_Click);
-            // 
-            // btnExit
-            // 
-            this.btnExit.Location = new System.Drawing.Point(67, 396);
-            this.btnExit.Name = "btnExit";
-            this.btnExit.Size = new System.Drawing.Size(75, 23);
-            this.btnExit.TabIndex = 3;
-            this.btnExit.Text = "Exit";
-            this.btnExit.UseVisualStyleBackColor = true;
-            this.btnExit.Click += new System.EventHandler(this.btnExit_Click);
             // 
             // Form1
             // 

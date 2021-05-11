@@ -20,9 +20,19 @@ namespace Gomoku
 
         private void button1_Click(object sender, EventArgs e)
         {
+            // This essentially creates a class, known as pg (type ServerForm)
             ServerForm pg = new ServerForm();
 
+        https://stackoverflow.com/questions/40509838/project-vs-repository-in-github
             pg.Show();
+
+            //if()
+
+            FileIO io = new FileIO();
+
+        
+
+
            
         }
 
