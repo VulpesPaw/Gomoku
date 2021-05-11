@@ -23,7 +23,7 @@ namespace Gomoku
             // This essentially creates a class, known as pg (type ServerForm)
             ServerForm pg = new ServerForm();
 
-        https://stackoverflow.com/questions/40509838/project-vs-repository-in-github
+        //https://stackoverflow.com/questions/40509838/project-vs-repository-in-github
             pg.Show();
 
             //if()

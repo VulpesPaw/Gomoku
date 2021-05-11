@@ -13,8 +13,7 @@ namespace Gomoku
     public partial class SettingsForm : Form
     {
 
-        public string text;
-        public bool darkmode;
+        public string gameTag, darkmode;
         FileIO fileHandler = new FileIO("settings.lol");
         public SettingsForm()
         {
@@ -37,10 +36,15 @@ namespace Gomoku
             {
                 return;
             }
-            text = tbxGameTag.Text;
-            darkmode = cbxDM.Checked;
-            string[] settings = new string[2];
+            gameTag = tbxGameTag.Text;
+            darkmode = cbxDM.Checked.ToString();
+            string[] settings = { gameTag, darkmode};
+
             fileHandler.FileInput(settings);
+            settings = fileHandler.FileOutput();
+            System.Diagnostics.Debug.WriteLine(settings.Length);
+            System.Diagnostics.Debug.WriteLine(settings);
+
             this.Close();
 
             

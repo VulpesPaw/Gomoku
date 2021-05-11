@@ -11,9 +11,9 @@ namespace Gomoku
     /// <summary>
     /// FileIO handels read and write request
     /// </summary>
-    internal class FileIO : Settings
+    internal class FileIO
     {
-        private string defaultPath;
+        private string @defaultPath;
 
         /*
          *
@@ -51,14 +51,14 @@ namespace Gomoku
                 FileMode mode = FileMode.Create;
 
                 FileStream str = new FileStream(defaultPath, mode, access);
-                BinaryWriter writer = new BinaryWriter(str);
+                StreamWriter writer = new StreamWriter(str);
 
-                System.Diagnostics.Debug.WriteLine(dataArr);
+               //System.Diagnostics.Debug.WriteLine(dataArr);
                 foreach(var item in dataArr)
                 {
-                    System.Diagnostics.Debug.WriteLine(item);
-                    System.Diagnostics.Debug.WriteLine(item.ToString());
-                    writer.Write(item.ToString());
+                    //System.Diagnostics.Debug.WriteLine(item);
+                    //System.Diagnostics.Debug.WriteLine(item.ToString());
+                    writer.WriteLine(item.ToString());
                 }
                 writer.Dispose();
             } catch(Exception e)
@@ -71,7 +71,7 @@ namespace Gomoku
       /// Get file from selecedpath
       /// </summary>
       /// <returns>string array of file row-to-index based</returns>
-        public Array FileOutput()
+        public string[] FileOutput()
         {            
             try
             {
@@ -81,11 +81,20 @@ namespace Gomoku
 
                 FileStream str = new FileStream(defaultPath, mode, access);
                 StreamReader reader = new StreamReader(str);
-              
+
                 string[] lines = File.ReadAllLines(defaultPath);
 
                 reader.Dispose();
+              //  System.Diagnostics.Debug.WriteLine((defaultPath));
+                System.Diagnostics.Debug.WriteLine((lines));
+                System.Diagnostics.Debug.WriteLine((lines[0]));
+                System.Diagnostics.Debug.WriteLine((lines[1]));
 
+
+                System.Diagnostics.Debug.WriteLine(lines.GetType());
+
+
+                string[] arr = { "1", "2", "3" };
                 return lines;
             } catch(Exception e)
             {
