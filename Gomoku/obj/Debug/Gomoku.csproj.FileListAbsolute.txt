@@ -1,0 +1,13 @@
+C:\Users\richa\source\repos\Gomoku\Gomoku\bin\Debug\Gomoku.exe.config
+C:\Users\richa\source\repos\Gomoku\Gomoku\bin\Debug\Gomoku.exe
+C:\Users\richa\source\repos\Gomoku\Gomoku\bin\Debug\Gomoku.pdb
+C:\Users\richa\source\repos\Gomoku\Gomoku\obj\Debug\Gomoku.csprojAssemblyReference.cache
+C:\Users\richa\source\repos\Gomoku\Gomoku\obj\Debug\Gomoku.Form1.resources
+C:\Users\richa\source\repos\Gomoku\Gomoku\obj\Debug\Gomoku.Properties.Resources.resources
+C:\Users\richa\source\repos\Gomoku\Gomoku\obj\Debug\Gomoku.csproj.GenerateResource.cache
+C:\Users\richa\source\repos\Gomoku\Gomoku\obj\Debug\Gomoku.csproj.CoreCompileInputs.cache
+C:\Users\richa\source\repos\Gomoku\Gomoku\obj\Debug\Gomoku.exe
+C:\Users\richa\source\repos\Gomoku\Gomoku\obj\Debug\Gomoku.pdb
+C:\Users\richa\source\repos\Gomoku\Gomoku\obj\Debug\Gomoku.ClientForm.resources
+C:\Users\richa\source\repos\Gomoku\Gomoku\obj\Debug\Gomoku.ServerForm.resources
+C:\Users\richa\source\repos\Gomoku\Gomoku\obj\Debug\Gomoku.SettingsForm.resources
