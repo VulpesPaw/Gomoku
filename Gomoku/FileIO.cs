@@ -53,8 +53,11 @@ namespace Gomoku
                 FileStream str = new FileStream(defaultPath, mode, access);
                 BinaryWriter writer = new BinaryWriter(str);
 
+                System.Diagnostics.Debug.WriteLine(dataArr);
                 foreach(var item in dataArr)
                 {
+                    System.Diagnostics.Debug.WriteLine(item);
+                    System.Diagnostics.Debug.WriteLine(item.ToString());
                     writer.Write(item.ToString());
                 }
                 writer.Dispose();
@@ -78,11 +81,10 @@ namespace Gomoku
 
                 FileStream str = new FileStream(defaultPath, mode, access);
                 StreamReader reader = new StreamReader(str);
-               
-                List<string> list = new List<string>();
-
-
+              
                 string[] lines = File.ReadAllLines(defaultPath);
+
+                reader.Dispose();
 
                 return lines;
             } catch(Exception e)

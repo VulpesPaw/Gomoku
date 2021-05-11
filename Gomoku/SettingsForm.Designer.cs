@@ -29,24 +29,24 @@ namespace Gomoku
         /// </summary>
         private void InitializeComponent()
         {
-            this.checkBox1 = new System.Windows.Forms.CheckBox();
+            this.cbxDM = new System.Windows.Forms.CheckBox();
             this.btnSave = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
-            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.tbxGameTag = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
-            // checkBox1
+            // cbxDM
             // 
-            this.checkBox1.AutoSize = true;
-            this.checkBox1.Location = new System.Drawing.Point(258, 142);
-            this.checkBox1.Name = "checkBox1";
-            this.checkBox1.Size = new System.Drawing.Size(15, 14);
-            this.checkBox1.TabIndex = 0;
-            this.checkBox1.UseVisualStyleBackColor = true;
+            this.cbxDM.AutoSize = true;
+            this.cbxDM.Location = new System.Drawing.Point(258, 142);
+            this.cbxDM.Name = "cbxDM";
+            this.cbxDM.Size = new System.Drawing.Size(15, 14);
+            this.cbxDM.TabIndex = 0;
+            this.cbxDM.UseVisualStyleBackColor = true;
             // 
             // btnSave
             // 
@@ -78,12 +78,12 @@ namespace Gomoku
             this.label1.TabIndex = 3;
             this.label1.Text = "TODO: check for exisitng settings and applaise them";
             // 
-            // textBox1
+            // tbxGameTag
             // 
-            this.textBox1.Location = new System.Drawing.Point(173, 77);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(100, 20);
-            this.textBox1.TabIndex = 4;
+            this.tbxGameTag.Location = new System.Drawing.Point(173, 77);
+            this.tbxGameTag.Name = "tbxGameTag";
+            this.tbxGameTag.Size = new System.Drawing.Size(100, 20);
+            this.tbxGameTag.TabIndex = 4;
             // 
             // label2
             // 
@@ -120,11 +120,11 @@ namespace Gomoku
             this.Controls.Add(this.label4);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
-            this.Controls.Add(this.textBox1);
+            this.Controls.Add(this.tbxGameTag);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.btnCancel);
             this.Controls.Add(this.btnSave);
-            this.Controls.Add(this.checkBox1);
+            this.Controls.Add(this.cbxDM);
             this.Name = "SettingsForm";
             this.Text = "Settings";
             this.Load += new System.EventHandler(this.Settings_Load);
@@ -135,11 +135,11 @@ namespace Gomoku
 
         #endregion
 
-        private System.Windows.Forms.CheckBox checkBox1;
+        private System.Windows.Forms.CheckBox cbxDM;
         private System.Windows.Forms.Button btnSave;
         private System.Windows.Forms.Button btnCancel;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.TextBox tbxGameTag;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label4;

@@ -14,6 +14,8 @@ namespace Gomoku
     {
 
         public string text;
+        public bool darkmode;
+        FileIO fileHandler = new FileIO("settings.lol");
         public SettingsForm()
         {
             InitializeComponent();
@@ -31,7 +33,17 @@ namespace Gomoku
 
         private void btnSave_Click(object sender, EventArgs e)
         {
-            text = textBox1.Text;
+            if(String.IsNullOrWhiteSpace(tbxGameTag.Text))
+            {
+                return;
+            }
+            text = tbxGameTag.Text;
+            darkmode = cbxDM.Checked;
+            string[] settings = new string[2];
+            fileHandler.FileInput(settings);
+            this.Close();
+
+            
 
             /* TODO
              * Check and read current applied settings 
