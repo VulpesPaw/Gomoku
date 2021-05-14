@@ -25,21 +25,26 @@ namespace Gomoku
             this.dirPath = _dirPath;
             this.filename = _filename;
 
-
-
-        }
-
-        private void Settings_Load(object sender, EventArgs e)
-        {
-            System.Diagnostics.Debug.WriteLine("Before settings luanch");
-
+            // Applies inital settings if present
             bool dirExist = fileHandler.checkForDir(fullPath);
+            System.Diagnostics.Debug.WriteLine(dirExist);
             if(dirExist)
             {
-                System.Diagnostics.Debug.WriteLine("Before settings luanch");
+                string[] settings = fileHandler.FileOutput(fullPath);
+                tbxGameTag.Text = settings[0];
+                if(settings[1] == "True")
+                {
+                    cbxDM.Checked = true;
+                } else
+                {
+                    cbxDM.Checked = false;
+
+                }
 
             }
+
         }
+
 
         private void btnCancel_Click(object sender, EventArgs e)
         {
