@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.IO;
 
 namespace Gomoku
 {
@@ -19,6 +20,7 @@ namespace Gomoku
          *  • GameRules
          *
          */
+        private string @settingsPath = Path.Combine(System.Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), @"c-gomoku");
 
         public Form1()
         {
@@ -44,7 +46,7 @@ namespace Gomoku
 
         private void btnStartGame_Click(object sender, EventArgs e)
         {
-            HostOptionsForm settingsForm = new HostOptionsForm();
+            /*HostOptionsForm settingsForm = new HostOptionsForm();
             DialogResult r = HostOptionsForm.ShowDialog();
             if(r == DialogResult.Yes)
             {
@@ -52,13 +54,12 @@ namespace Gomoku
             }else if (r == DialogResult.No)
             {
                 //Client is selected
-            }
+            }*/
         }
 
         private void btnSettings_Click(object sender, EventArgs e)
         {
-            string @documentPath = System.Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-            SettingsForm settingsForm = new SettingsForm(@documentPath + @"\c-gomoku", "settings.hc");
+            SettingsForm settingsForm = new SettingsForm(settingsPath, "settings.hc");
 
             DialogResult r = settingsForm.ShowDialog();
 
@@ -66,11 +67,11 @@ namespace Gomoku
 
             if(r == DialogResult.OK)
             {
-                loadSettings(settingsForm);
+                applySettings(settingsForm);
             }
         }
 
-        private void loadSettings(SettingsForm settings)
+        private void applySettings(SettingsForm settings)
         {
             if(settings.darkmode == "True")
             {
@@ -105,6 +106,25 @@ namespace Gomoku
             foreach(Control subC in myControl.Controls)
             {
                 UpdateColorControls(subC, bg, fg);
+            }
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            try
+            {
+                string path = System.Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\c-gomoku\settings.hc";
+                System.Diagnostics.Debug.WriteLine(path);
+                SettingsForm settings = new SettingsForm(path);
+                bool gotSettings = settings.getSettings(path);
+
+                if(gotSettings)
+                {
+                    applySettings(settings);
+                }
+            } catch(Exception err)
+            {
+                MessageBox.Show(err.Message, "Error: Damnation to you!");
             }
         }
     }

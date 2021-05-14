@@ -120,6 +120,7 @@ namespace Gomoku
             this.Controls.Add(this.gbxStartMenu);
             this.Name = "Form1";
             this.Text = "Gomoku";
+            this.Load += new System.EventHandler(this.Form1_Load);
             this.gbxStartMenu.ResumeLayout(false);
             this.gbxStartMenu.PerformLayout();
             this.ResumeLayout(false);

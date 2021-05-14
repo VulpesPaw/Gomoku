@@ -15,7 +15,7 @@ namespace Gomoku
     {
         private string @fullPath;
         public string gameTag, darkmode;
-        public string @dirPath, filename;
+        private string @dirPath, filename;
         private FileIO fileHandler = new FileIO();
 
         public SettingsForm(string @_dirPath, string _filename)
@@ -31,6 +31,8 @@ namespace Gomoku
             if(dirExist)
             {
                 string[] settings = fileHandler.FileOutput(fullPath);
+                gameTag = settings[0];
+                darkmode = settings[1];
                 tbxGameTag.Text = settings[0];
                 if(settings[1] == "True")
                 {
@@ -38,13 +40,26 @@ namespace Gomoku
                 } else
                 {
                     cbxDM.Checked = false;
-
                 }
-
             }
-
         }
 
+        /// <summary>
+        /// Gets settings
+        /// </summary>
+        /// <param name="_dirPath"></param>
+        public SettingsForm(string @_dirPath)
+        {
+            // Applies inital settings if present
+            bool dirExist = fileHandler.checkForDir(@_dirPath);
+            System.Diagnostics.Debug.WriteLine(@_dirPath);
+            if(dirExist)
+            {
+                string[] settings = fileHandler.FileOutput(@_dirPath);
+                gameTag = settings[0];
+                darkmode = settings[1];
+            }
+        }
 
         private void btnCancel_Click(object sender, EventArgs e)
         {
@@ -53,7 +68,7 @@ namespace Gomoku
 
         private void SettingsForm_FormClosed(object sender, FormClosedEventArgs e)
         {
-          //  DialogResult = DialogResult.Cancel;
+            //  DialogResult = DialogResult.Cancel;
         }
 
         private void btnSave_Click(object sender, EventArgs e)
@@ -66,7 +81,7 @@ namespace Gomoku
             darkmode = cbxDM.Checked.ToString();
             string[] settings = { gameTag, darkmode };
 
-            fileHandler.FileInput(settings, dirPath,filename);
+            fileHandler.FileInput(settings, dirPath, filename);
             //settings = fileHandler.FileOutput(fullPath);
             // System.Diagnostics.Debug.WriteLine(settings.Length);
             // System.Diagnostics.Debug.WriteLine(settings);
@@ -83,6 +98,20 @@ namespace Gomoku
              *
              *
              */
+        }
+
+        public bool getSettings(string @fullPath)
+        {
+            bool dirExist = fileHandler.checkForDir(fullPath);
+            if(dirExist)
+            {
+                string[] settings = fileHandler.FileOutput(fullPath);
+                gameTag = settings[0];
+                darkmode = settings[1];
+
+                return true;
+            }
+            return false;
         }
     }
 }
