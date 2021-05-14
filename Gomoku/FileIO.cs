@@ -126,7 +126,7 @@ namespace Gomoku
         /// <returns>True if dir exists, else False</returns>
         public bool checkForDir(string @dirPath)
         {
-            if(!Directory.Exists(dirPath))
+            if(!Directory.Exists(dirPath) && dirPath != null)
             {
                 return true;
             }
