@@ -10,22 +10,22 @@ using System.Windows.Forms;
 
 namespace Gomoku
 {
-    public partial class Gomoku : Form
+    public partial class HostOptionsForm : Form
     {
-        public Gomoku()
+        public HostOptionsForm()
         {
             InitializeComponent();
         }
 
         private void btnServer_Click(object sender, EventArgs e)
         {
-            // Server is selected
+            // Player chose Server
             DialogResult = DialogResult.Yes;
         }
 
         private void btnClient_Click(object sender, EventArgs e)
         {
-            // Client is selected
+            // Player chose Client
             DialogResult = DialogResult.No;
         }
     }
