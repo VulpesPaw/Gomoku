@@ -127,7 +127,8 @@ namespace Gomoku
             this.Controls.Add(this.cbxDM);
             this.Name = "SettingsForm";
             this.Text = "Settings";
-            this.Load += new System.EventHandler(this.Settings_Load);
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.SettingsForm_FormClosed);
+
             this.ResumeLayout(false);
             this.PerformLayout();
 
