@@ -8,7 +8,5 @@ C:\Users\richa\source\repos\Gomoku\Gomoku\obj\Debug\Gomoku.csproj.GenerateResour
 C:\Users\richa\source\repos\Gomoku\Gomoku\obj\Debug\Gomoku.csproj.CoreCompileInputs.cache
 C:\Users\richa\source\repos\Gomoku\Gomoku\obj\Debug\Gomoku.exe
 C:\Users\richa\source\repos\Gomoku\Gomoku\obj\Debug\Gomoku.pdb
-C:\Users\richa\source\repos\Gomoku\Gomoku\obj\Debug\Gomoku.ClientForm.resources
-C:\Users\richa\source\repos\Gomoku\Gomoku\obj\Debug\Gomoku.ServerForm.resources
 C:\Users\richa\source\repos\Gomoku\Gomoku\obj\Debug\Gomoku.SettingsForm.resources
-C:\Users\richa\source\repos\Gomoku\Gomoku\obj\Debug\Gomoku.Gomoku.resources
+C:\Users\richa\source\repos\Gomoku\Gomoku\obj\Debug\Gomoku.HostOptionsForm.resources

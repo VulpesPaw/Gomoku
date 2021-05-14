@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO;
 
+
 namespace Gomoku
 {
     public partial class Form1 : Form
@@ -30,9 +31,7 @@ namespace Gomoku
         private void button1_Click(object sender, EventArgs e)
         {
             // This essentially creates a class, known as pg (type ServerForm)
-            ServerForm pg = new ServerForm();
-
-            pg.Show();
+          
 
             //if()
         }
@@ -40,21 +39,35 @@ namespace Gomoku
         private void button2_Click(object sender, EventArgs e)
         {
             // this.Hide();
+            // string @path = System.Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+            // System.Diagnostics.Debug.WriteLine(path);
+
+            MessageBox.Show("Random ass message, lol!");
             string @path = System.Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
             System.Diagnostics.Debug.WriteLine(path);
+
+            Task.Run(() =>
+            {
+                var dialogResult = MessageBox.Show("Message", "Title", MessageBoxButtons.OKCancel);
+                if(dialogResult == DialogResult.OK)
+                    MessageBox.Show("OK Clicked");
+                else
+                    MessageBox.Show("Cancel Clicked");
+            });
+
         }
 
         private void btnStartGame_Click(object sender, EventArgs e)
         {
-            /*HostOptionsForm settingsForm = new HostOptionsForm();
-            DialogResult r = HostOptionsForm.ShowDialog();
+            HostOptionsForm hostOptions = new HostOptionsForm();
+            DialogResult r = hostOptions.ShowDialog();
             if(r == DialogResult.Yes)
             {
                 //Server is selected
             }else if (r == DialogResult.No)
             {
                 //Client is selected
-            }*/
+            }
         }
 
         private void btnSettings_Click(object sender, EventArgs e)
@@ -126,6 +139,10 @@ namespace Gomoku
             {
                 MessageBox.Show(err.Message, "Error: Damnation to you!");
             }
+        }
+        private void initiateServer()
+        {
+            NetworkServer netServer = new NetworkServer();
         }
     }
 }
