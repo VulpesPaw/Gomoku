@@ -7,19 +7,28 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Net;
 
 namespace Gomoku
 {
     public partial class NetClientUI : Form
     {
-        private string ip;
+        /* TODO
+         * • ip validation
+         * 
+         */
+
+        // IP validation
+        //https://stackoverflow.com/questions/11412956/what-is-the-best-way-of-validating-an-ip-address
+
+        private IPAddress ip;
 
         public NetClientUI()
         {
             InitializeComponent();
         }
 
-        public string Ip
+        public IPAddress Ip
         {
             get { return ip; }
             set { ip = value; }
@@ -34,6 +43,7 @@ namespace Gomoku
         private void btnConnect_Click(object sender, EventArgs e)
         {
             // Connect
+            ip = IPAddress.Parse( tbxIP.Text);
             DialogResult = DialogResult.OK;
         }
     }
