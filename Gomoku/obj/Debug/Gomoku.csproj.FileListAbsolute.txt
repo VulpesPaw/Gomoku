@@ -10,3 +10,4 @@ C:\Users\richa\source\repos\Gomoku\Gomoku\obj\Debug\Gomoku.exe
 C:\Users\richa\source\repos\Gomoku\Gomoku\obj\Debug\Gomoku.pdb
 C:\Users\richa\source\repos\Gomoku\Gomoku\obj\Debug\Gomoku.SettingsForm.resources
 C:\Users\richa\source\repos\Gomoku\Gomoku\obj\Debug\Gomoku.HostOptionsForm.resources
+C:\Users\richa\source\repos\Gomoku\Gomoku\obj\Debug\Gomoku.NetClientUI.resources

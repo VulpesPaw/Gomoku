@@ -59,6 +59,12 @@
     <Compile Include="HostOptionsForm.Designer.cs">
       <DependentUpon>HostOptionsForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="NetClientUI.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="NetClientUI.Designer.cs">
+      <DependentUpon>NetClientUI.cs</DependentUpon>
+    </Compile>
     <Compile Include="NetworkClient.cs" />
     <Compile Include="NetworkServer.cs" />
     <Compile Include="Program.cs" />
@@ -74,6 +80,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="HostOptionsForm.resx">
       <DependentUpon>HostOptionsForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="NetClientUI.resx">
+      <DependentUpon>NetClientUI.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

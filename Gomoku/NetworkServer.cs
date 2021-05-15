@@ -16,15 +16,16 @@ namespace Gomoku
         private TcpClient client;
 
         // Not used by offical stuffies
-        private int PORT = 42069;
+        private int PORT;
 
         /* TODO:
          * • Get users IP (local)
          * • Display users IP
          */
 
-        public NetworkServer()
+        public NetworkServer(int _PORT = 42069)
         {
+            this.PORT = _PORT != 0 ? _PORT : 42069;
             initiateServer();
         }
 

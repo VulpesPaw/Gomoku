@@ -31,8 +31,8 @@ namespace Gomoku
         private void button1_Click(object sender, EventArgs e)
         {
             // This essentially creates a class, known as pg (type ServerForm)
-          
 
+            MessageBox.Show("LOL", Text);
             //if()
         }
 
@@ -64,9 +64,30 @@ namespace Gomoku
             if(r == DialogResult.Yes)
             {
                 //Server is selected
+                NetworkServer server = new NetworkServer();
+                //! Server doesnt seem to recive message
+
             }else if (r == DialogResult.No)
             {
                 //Client is selected
+                NetClientUI clientUI = new NetClientUI();
+                DialogResult rClient = clientUI.ShowDialog();
+
+                if(rClient == DialogResult.OK)
+                {
+                    NetworkClient client = new NetworkClient(clientUI.Ip);
+                    System.Diagnostics.Debug.WriteLine("-- Msg -- " + "Procede to message");
+
+                    //! Client connected Retruns false!
+                    //! WARNING: SendData function does not initiates correctly
+                    client.sendData("Fuck you!");
+                    System.Diagnostics.Debug.WriteLine("-- Msg -- " + "After message");
+
+                } else if(rClient == DialogResult.Cancel)
+                {
+                    return;
+                }
+              
             }
         }
 
