@@ -8,7 +8,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO;
-
+using System.Net;
+using System.Net.Sockets;
 
 namespace Gomoku
 {
@@ -22,7 +23,7 @@ namespace Gomoku
          *
          */
         private string @settingsPath = Path.Combine(System.Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), @"c-gomoku");
-
+        NetworkClient client = new NetworkClient();
         public Form1()
         {
             InitializeComponent();
@@ -32,8 +33,10 @@ namespace Gomoku
         {
             // This essentially creates a class, known as pg (type ServerForm)
 
-            MessageBox.Show("LOL", Text);
+            //MessageBox.Show("LOL", Text);
+
             //if()
+      
         }
 
         private void button2_Click(object sender, EventArgs e)
@@ -41,7 +44,7 @@ namespace Gomoku
             // this.Hide();
             // string @path = System.Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
             // System.Diagnostics.Debug.WriteLine(path);
-
+            /*
             MessageBox.Show("Random ass message, lol!");
             string @path = System.Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
             System.Diagnostics.Debug.WriteLine(path);
@@ -54,7 +57,8 @@ namespace Gomoku
                 else
                     MessageBox.Show("Cancel Clicked");
             });
-
+            */
+            client.sendData("Frick");
         }
 
         private void btnStartGame_Click(object sender, EventArgs e)
@@ -65,9 +69,10 @@ namespace Gomoku
             {
                 //Server is selected
                 NetworkServer server = new NetworkServer();
-                //! Server doesnt seem to recive message
+                
+               
 
-            }else if (r == DialogResult.No)
+            } else if (r == DialogResult.No)
             {
                 //Client is selected
                 NetClientUI clientUI = new NetClientUI();
@@ -75,14 +80,10 @@ namespace Gomoku
 
                 if(rClient == DialogResult.OK)
                 {
-                    NetworkClient client = new NetworkClient(clientUI.Ip);
-                    System.Diagnostics.Debug.WriteLine("-- Msg -- " + "Procede to message");
-
-                    //! Client connected Retruns false!
-                    //! WARNING: SendData function does not initiates correctly
-                    client.sendData("Fuck you!");
-                    System.Diagnostics.Debug.WriteLine("-- Msg -- " + "After message");
-
+                    client = new NetworkClient(clientUI.Ip);
+                    client.connectClientAndResponse();
+                  
+                    
                 } else if(rClient == DialogResult.Cancel)
                 {
                     return;
@@ -90,6 +91,11 @@ namespace Gomoku
               
             }
         }
+
+      /*  private async void initiateClient()
+        {
+            await client.connectClient();
+        }*/
 
         private void btnSettings_Click(object sender, EventArgs e)
         {
