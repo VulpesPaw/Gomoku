@@ -22,11 +22,22 @@ namespace Gomoku
          *  • GameRules
          *
          */
+
         private string @settingsPath = Path.Combine(System.Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), @"c-gomoku");
-        NetworkClient client = new NetworkClient();
+        private NetworkClient client = new NetworkClient();
+
+        private enum e_active
+        {
+            server = 0,
+            client = 1,
+        }
+
+        private e_active active;
+
         public Form1()
         {
             InitializeComponent();
+            this.Size = new Size(600, 600);
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -36,7 +47,6 @@ namespace Gomoku
             //MessageBox.Show("LOL", Text);
 
             //if()
-      
         }
 
         private void button2_Click(object sender, EventArgs e)
@@ -68,13 +78,52 @@ namespace Gomoku
             if(r == DialogResult.Yes)
             {
                 //Server is selected
-                NetworkServer server = new NetworkServer();
-                
-               
 
-            } else if (r == DialogResult.No)
+                initiateServer();
+            } else if(r == DialogResult.No)
             {
                 //Client is selected
+                initiateClient();
+            }
+        }
+
+        private void initiateServer()
+        {
+            try
+            {
+                // Keep track if player is server or client
+                active = e_active.server;
+
+                NetworkServer server = new NetworkServer();
+                // random between 1 or 2
+                if(new Random().Next(0, 2) > 0)
+                {
+                    // true means server starts
+                }
+
+                /* TODO:
+                 * Initate game, send prompt to client
+                 * Draw who'll start (50/50?)
+                 * Keep track of boards
+                 * Change visisbility between groupboxes!
+                 *
+                 * Add pictures to picBoxes,
+                 * On click, call function, applay player symbol. If it is alrady filled, do nothing.
+                 * Call oposing player of change, tell its thier turn.
+                 *
+                 */
+            } catch(Exception err)
+            {
+                MessageBox.Show(err.Message, Text);
+            }
+        }
+
+        private void initiateClient()
+        {
+            try
+            {
+                // Keep track if player is server or client
+                active = e_active.client;
                 NetClientUI clientUI = new NetClientUI();
                 DialogResult rClient = clientUI.ShowDialog();
 
@@ -82,20 +131,15 @@ namespace Gomoku
                 {
                     client = new NetworkClient(clientUI.Ip);
                     client.connectClientAndResponse();
-                  
-                    
                 } else if(rClient == DialogResult.Cancel)
                 {
                     return;
                 }
-              
+            } catch(Exception err)
+            {
+                MessageBox.Show(err.Message, Text);
             }
         }
-
-      /*  private async void initiateClient()
-        {
-            await client.connectClient();
-        }*/
 
         private void btnSettings_Click(object sender, EventArgs e)
         {
@@ -167,9 +211,21 @@ namespace Gomoku
                 MessageBox.Show(err.Message, "Error: Damnation to you!");
             }
         }
-        private void initiateServer()
+
+        private void pictureBox1_Click(object sender, EventArgs e)
         {
-            NetworkServer netServer = new NetworkServer();
+        }
+
+        public void chosenGrid(int girdNr)
+        {
+            if(active == 0)
+            {
+                //TODO Activate grid number
+                //server did
+            } else
+            {
+                //client did
+            }
         }
     }
 }

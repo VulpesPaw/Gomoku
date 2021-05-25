@@ -36,7 +36,11 @@ namespace Gomoku
             this.btnExit = new System.Windows.Forms.Button();
             this.btnSettings = new System.Windows.Forms.Button();
             this.btnStartGame = new System.Windows.Forms.Button();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.gbxStartMenu.SuspendLayout();
+            this.groupBox1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
             // button1
@@ -112,17 +116,38 @@ namespace Gomoku
             this.btnStartGame.UseVisualStyleBackColor = true;
             this.btnStartGame.Click += new System.EventHandler(this.btnStartGame_Click);
             // 
+            // groupBox1
+            // 
+            this.groupBox1.Controls.Add(this.pictureBox1);
+            this.groupBox1.Location = new System.Drawing.Point(600, 12);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(594, 537);
+            this.groupBox1.TabIndex = 3;
+            this.groupBox1.TabStop = false;
+            // 
+            // pictureBox1
+            // 
+            this.pictureBox1.Location = new System.Drawing.Point(69, 26);
+            this.pictureBox1.Name = "pictureBox1";
+            this.pictureBox1.Size = new System.Drawing.Size(186, 175);
+            this.pictureBox1.TabIndex = 0;
+            this.pictureBox1.TabStop = false;
+            this.pictureBox1.Click += new System.EventHandler(this.pictureBox1_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(584, 561);
+            this.ClientSize = new System.Drawing.Size(1351, 882);
+            this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.gbxStartMenu);
             this.Name = "Form1";
             this.Text = "Gomoku";
             this.Load += new System.EventHandler(this.Form1_Load);
             this.gbxStartMenu.ResumeLayout(false);
             this.gbxStartMenu.PerformLayout();
+            this.groupBox1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -136,6 +161,8 @@ namespace Gomoku
         private System.Windows.Forms.Button btnStartGame;
         private System.Windows.Forms.Button btnSettings;
         private System.Windows.Forms.Button btnExit;
+        private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.PictureBox pictureBox1;
     }
 }
 
