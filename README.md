@@ -1,5 +1,6 @@
 # Gomoku - C#
 
+## Info
 Gomoku, or three in a row - C# project\
 This will work across a network (LAN),\
 You can save limited settings,\
