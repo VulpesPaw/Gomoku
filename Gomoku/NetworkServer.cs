@@ -10,18 +10,12 @@ using System.Windows.Forms;
 namespace Gomoku
 
 {
-    internal class NetworkServer
+    internal class NetworkServer : NetMessage
     {
-        private TcpListener listener;
-        private TcpClient client;
+        public TcpListener listener;
+        public TcpClient client;
 
-        // Not used by offical stuffies
         private int PORT;
-
-        /* TODO:
-         * • Get users IP (local)
-         * • Display users IP
-         */
 
         public NetworkServer(int _PORT = 42069)
         {
@@ -36,32 +30,31 @@ namespace Gomoku
                 listener = new TcpListener(IPAddress.Any, PORT);
                 listener.Start();
 
-                waitForClient();
+                // waitForClient();
             } catch(Exception err)
             {
                 MessageBox.Show(err.Message, err.Source);
             }
         }
 
-        private async void waitForClient()
+        public async Task<bool> waitForClient()
         {
             try
             {
-                System.Diagnostics.Debug.WriteLine("-- Waiting for client -- ");
                 client = await listener.AcceptTcpClientAsync();
-                System.Diagnostics.Debug.WriteLine("-- Found client -- " + client);
+                client.NoDelay = true;
 
-                translateNetworkMessage(client);
-                System.Diagnostics.Debug.WriteLine("-- Translating client message -- ");
+                return true;
 
-                //?   if(!clientResp.Connected) startConnection(); // callback to client
             } catch(Exception err)
             {
                 MessageBox.Show(err.Message, err.Source);
+                return false;
             }
         }
 
-        private async void translateNetworkMessage(TcpClient client)
+        /*
+        public async Task<string> translateNetworkMessage(TcpClient client)
         {
             try
             {
@@ -72,41 +65,23 @@ namespace Gomoku
 
                 string msg = Encoding.UTF8.GetString(buffer, 0, n);
 
-                sendData("Hello Thus World from Server =)");
-              /*  if(msg[0] == '@')
+             /*  if(msg[0] == '@')
                 {
                     msgCommands(msg);
-                    return;
-                }*/
+                    //callback(msg);
+                    return msg;
+                }*//*
                 MessageBox.Show(msg, "Revieved message over network");
-
-                translateNetworkMessage(client);
+                return msg;
+                // translateNetworkMessage(client);
             } catch(Exception err)
             {
                 MessageBox.Show(err.Message, "ERROR!");
             }
-        }
+            return null;
+        }*/
+        // class playfield?
 
-        /* ? Keep for shutdown procedure?
-         
-         private void msgCommands(string command)
-        {
-            char c0 = command[1];
-            System.Diagnostics.Debug.WriteLine("-- Command C0 -- " + c0);
-            command = command.Substring(3);
-            switch(c0)
-            {
-                case 'r':
-                    System.Diagnostics.Debug.WriteLine("-- Command Arg -- " + command);
-
-                    break;
-
-                default:
-                    break;
-            }
-            MessageBox.Show(command);
-        }
-        */
         public async void sendData(string msg)
         {
             try
@@ -116,6 +91,7 @@ namespace Gomoku
                     byte[] data = Encoding.UTF8.GetBytes(msg);
 
                     await client.GetStream().WriteAsync(data, 0, data.Length);
+                    System.Diagnostics.Debug.WriteLine("-- Net-S msg" + msg + " --");
                 }
             } catch(Exception err)
             {

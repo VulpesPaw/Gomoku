@@ -9,12 +9,12 @@ using System.Windows.Forms;
 
 namespace Gomoku
 {
-    internal class NetworkClient
+    internal class NetworkClient:NetMessage
     {
         private int PORT = 42069;
-        private int ClientPORT = 42070;
         public IPAddress ip;
-        private TcpClient client = new TcpClient();
+        public TcpClient client = new TcpClient();
+
 
         /// <summary>
         /// Network Server
@@ -49,54 +49,45 @@ namespace Gomoku
         {
         }
 
-        public async void connectClient()
+        public async Task<bool> connectClient()
         {
             try
             {
                 if(!client.Connected)
                 {
+                    client.NoDelay = true;
                     await client.ConnectAsync(ip, PORT);
-                    
+                    return true;
+                   // translateNetworkMessage(client);
                 }
             } catch(Exception err)
             {
                 MessageBox.Show(err.Message, "Error");
             }
+            return false;
         }
-        public async void connectClientAndResponse()
-        {
-            try
-            {
-                if(!client.Connected)
-                {
-                    await client.ConnectAsync(ip, PORT);
-                    sendData("@r_" + ClientPORT);
-                    translateNetworkMessage(client);
-                }
-            } catch(Exception err)
-            {
-                MessageBox.Show(err.Message, "Error");
-            }
-        }
+        
         public async void sendData(string msg)
         {
             try
             {
-                System.Diagnostics.Debug.WriteLine("-- Client Connected -- " + client.Connected);
+            
 
                 if(client.Connected)
                 {
                     byte[] data = Encoding.UTF8.GetBytes(msg);
 
                     await client.GetStream().WriteAsync(data, 0, data.Length);
-                    System.Diagnostics.Debug.WriteLine("-- Msg -- " + "Procedure after message");
+                    System.Diagnostics.Debug.WriteLine("-- Net-C msg" + msg + " --");
+
+                    
                 }
             } catch(Exception err)
             {
                 MessageBox.Show(err.Message, "ERROR");
             }
         }
-        private async void translateNetworkMessage(TcpClient client)
+       /* private async void translateNetworkMessage(TcpClient client)
         {
             try
             {
@@ -107,19 +98,31 @@ namespace Gomoku
 
                 string msg = Encoding.UTF8.GetString(buffer, 0, n);
 
-               /* if(msg[0] == '@')
-                {
-                    //   msgCommands(msg);
-                    MessageBox.Show(msg);
-                    return;
-                }*/
-                MessageBox.Show(msg, "Revieved message over network");
-                sendData("Hello Thus World from Client =D");
+                MessageBox.Show(msg);
+                
+                //sendData("Hello Thus World from Client =D");
                 translateNetworkMessage(client);
             } catch(Exception err)
             {
                 MessageBox.Show(err.Message, "ERROR!");
             }
+        }*/
+        private void msgCommands(string command)
+        {
+            char c0 = command[1];
+
+            command = command.Substring(2);
+            switch(c0)
+            {
+                case 'r':
+
+
+                    break;
+
+                default:
+                    break;
+            }
+            MessageBox.Show(command);
         }
     }
 }

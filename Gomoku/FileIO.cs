@@ -74,7 +74,7 @@ namespace Gomoku
                 if(!checkForDir(dirPath))
                 {
                     throw new ArgumentException("Directorypath or file does not exist!", dirPath);
-                    return null;
+                   // return null;
                 }
                 FileAccess access = FileAccess.Read;
                 FileMode mode = FileMode.Open;
