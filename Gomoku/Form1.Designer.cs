@@ -29,8 +29,6 @@ namespace Gomoku
         /// </summary>
         private void InitializeComponent()
         {
-            this.button1 = new System.Windows.Forms.Button();
-            this.button2 = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.gbxStartMenu = new System.Windows.Forms.GroupBox();
             this.btnExit = new System.Windows.Forms.Button();
@@ -51,29 +49,15 @@ namespace Gomoku
             this.label3 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.btnSurrender = new System.Windows.Forms.Button();
+            this.gbxSW = new System.Windows.Forms.GroupBox();
+            this.btnCancel = new System.Windows.Forms.Button();
+            this.label5 = new System.Windows.Forms.Label();
+            this.lblGameTag = new System.Windows.Forms.Label();
+            this.lblUndertag = new System.Windows.Forms.Label();
             this.gbxStartMenu.SuspendLayout();
             this.gbxPlayArea.SuspendLayout();
+            this.gbxSW.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // button1
-            // 
-            this.button1.Location = new System.Drawing.Point(6, 473);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(75, 26);
-            this.button1.TabIndex = 0;
-            this.button1.Text = "button1";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
-            // 
-            // button2
-            // 
-            this.button2.Location = new System.Drawing.Point(6, 505);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(75, 26);
-            this.button2.TabIndex = 1;
-            this.button2.Text = "button2";
-            this.button2.UseVisualStyleBackColor = true;
-            this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
             // label1
             // 
@@ -86,12 +70,12 @@ namespace Gomoku
             // 
             // gbxStartMenu
             // 
+            this.gbxStartMenu.Controls.Add(this.lblUndertag);
+            this.gbxStartMenu.Controls.Add(this.lblGameTag);
             this.gbxStartMenu.Controls.Add(this.btnExit);
             this.gbxStartMenu.Controls.Add(this.btnSettings);
             this.gbxStartMenu.Controls.Add(this.btnStartGame);
-            this.gbxStartMenu.Controls.Add(this.button1);
             this.gbxStartMenu.Controls.Add(this.label1);
-            this.gbxStartMenu.Controls.Add(this.button2);
             this.gbxStartMenu.Location = new System.Drawing.Point(12, 12);
             this.gbxStartMenu.Name = "gbxStartMenu";
             this.gbxStartMenu.Size = new System.Drawing.Size(560, 537);
@@ -332,29 +316,81 @@ namespace Gomoku
             this.btnSurrender.TabIndex = 1;
             this.btnSurrender.Text = "Surrender";
             this.btnSurrender.UseVisualStyleBackColor = true;
+            this.btnSurrender.Click += new System.EventHandler(this.btnSurrender_Click);
+            // 
+            // gbxSW
+            // 
+            this.gbxSW.Controls.Add(this.btnCancel);
+            this.gbxSW.Controls.Add(this.label5);
+            this.gbxSW.Enabled = false;
+            this.gbxSW.Location = new System.Drawing.Point(1166, 12);
+            this.gbxSW.Name = "gbxSW";
+            this.gbxSW.Size = new System.Drawing.Size(560, 537);
+            this.gbxSW.TabIndex = 3;
+            this.gbxSW.TabStop = false;
+            this.gbxSW.Visible = false;
+            // 
+            // btnCancel
+            // 
+            this.btnCancel.Location = new System.Drawing.Point(246, 316);
+            this.btnCancel.Name = "btnCancel";
+            this.btnCancel.Size = new System.Drawing.Size(75, 23);
+            this.btnCancel.TabIndex = 1;
+            this.btnCancel.Text = "Cancel";
+            this.btnCancel.UseVisualStyleBackColor = true;
+            this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(204, 262);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(161, 13);
+            this.label5.TabIndex = 0;
+            this.label5.Text = "Waiting for a player to connect...";
+            // 
+            // lblGameTag
+            // 
+            this.lblGameTag.AutoSize = true;
+            this.lblGameTag.Location = new System.Drawing.Point(238, 167);
+            this.lblGameTag.Name = "lblGameTag";
+            this.lblGameTag.Size = new System.Drawing.Size(64, 13);
+            this.lblGameTag.TabIndex = 4;
+            this.lblGameTag.Text = "lblGameTag";
+            this.lblGameTag.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // lblUndertag
+            // 
+            this.lblUndertag.AutoSize = true;
+            this.lblUndertag.Location = new System.Drawing.Point(238, 190);
+            this.lblUndertag.Name = "lblUndertag";
+            this.lblUndertag.Size = new System.Drawing.Size(0, 13);
+            this.lblUndertag.TabIndex = 4;
+            this.lblUndertag.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1351, 882);
+            this.ClientSize = new System.Drawing.Size(1739, 556);
+            this.Controls.Add(this.gbxSW);
             this.Controls.Add(this.gbxPlayArea);
             this.Controls.Add(this.gbxStartMenu);
             this.Name = "Form1";
             this.Text = "Gomoku";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
             this.Load += new System.EventHandler(this.Form1_Load);
             this.gbxStartMenu.ResumeLayout(false);
             this.gbxStartMenu.PerformLayout();
             this.gbxPlayArea.ResumeLayout(false);
             this.gbxPlayArea.PerformLayout();
+            this.gbxSW.ResumeLayout(false);
+            this.gbxSW.PerformLayout();
             this.ResumeLayout(false);
 
         }
 
         #endregion
-
-        private System.Windows.Forms.Button button1;
-        private System.Windows.Forms.Button button2;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.GroupBox gbxStartMenu;
         private System.Windows.Forms.Button btnStartGame;
@@ -375,6 +411,11 @@ namespace Gomoku
         private System.Windows.Forms.ComboBox cBx2;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.GroupBox gbxSW;
+        private System.Windows.Forms.Button btnCancel;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.Label lblGameTag;
+        private System.Windows.Forms.Label lblUndertag;
     }
 }
 
