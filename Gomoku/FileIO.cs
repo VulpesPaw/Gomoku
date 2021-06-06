@@ -14,24 +14,12 @@ namespace Gomoku
     internal class FileIO
     {
   
-
-        /*
-         *
-         * Following path
-         * Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-         * Leads to path bellow
-         * C:\Users\richa\AppData\Roaming
-         *
-
-         */
-
-        // If no path is set (by dev) it will be defaulted to documents
-
         /// <summary>
         /// Writes data to seleced Path, if dir does not exit, it will be created
         /// </summary>
         /// <param name="data"><see cref="System.String"/>Array contains data in a row-to-index relation data-structure</param>
         /// <param name="dirPath"><see cref="System.String"/>dirPath are directory and filename</params>
+        // If no path is set (by dev) it will be defaulted to documents
         public void FileInput(Array dataArr, string @dirPath, string @filename)
         {
             try
@@ -85,14 +73,7 @@ namespace Gomoku
                 string[] lines = File.ReadAllLines(dirPath);
 
                 reader.Dispose();
-                //  System.Diagnostics.Debug.WriteLine((defaultPath));
-                /*System.Diagnostics.Debug.WriteLine((lines));
-                System.Diagnostics.Debug.WriteLine((lines[0]));
-                System.Diagnostics.Debug.WriteLine((lines[1]));*/
-
-                //  System.Diagnostics.Debug.WriteLine(lines.GetType());
-
-                //    string[] arr = { "1", "2", "3" };
+              
                 return lines;
             } catch(Exception e)
             {
@@ -105,8 +86,8 @@ namespace Gomoku
         /// Creates directory if it does not exist
         /// </summary>
         /// <param name="dirPath">Directory path</param>
-        /// <returns>(Bool)True: if succsessful and directory does not already exist</returns>
-        /// <return>(Bool)False: if dir already exist</return>
+        /// <returns>Boolean; True: if succsessful and directory does not already exist
+        /// (Bool)False: if dir already exist</return>
         public bool createDir(string @dirPath)
         {
             if(!Directory.Exists(dirPath))
