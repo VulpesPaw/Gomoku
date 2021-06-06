@@ -32,7 +32,6 @@ namespace Gomoku
             this.cbxDM = new System.Windows.Forms.CheckBox();
             this.btnSave = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
-            this.label1 = new System.Windows.Forms.Label();
             this.tbxGameTag = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
@@ -67,16 +66,6 @@ namespace Gomoku
             this.btnCancel.Text = "Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.ForeColor = System.Drawing.SystemColors.Desktop;
-            this.label1.Location = new System.Drawing.Point(43, 50);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(255, 13);
-            this.label1.TabIndex = 3;
-            this.label1.Text = "TODO: check for exisitng settings and applaise them";
             // 
             // tbxGameTag
             // 
@@ -121,14 +110,12 @@ namespace Gomoku
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.tbxGameTag);
-            this.Controls.Add(this.label1);
             this.Controls.Add(this.btnCancel);
             this.Controls.Add(this.btnSave);
             this.Controls.Add(this.cbxDM);
             this.Name = "SettingsForm";
             this.Text = "Settings";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.SettingsForm_FormClosed);
-
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -139,7 +126,6 @@ namespace Gomoku
         private System.Windows.Forms.CheckBox cbxDM;
         private System.Windows.Forms.Button btnSave;
         private System.Windows.Forms.Button btnCancel;
-        private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TextBox tbxGameTag;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label3;
