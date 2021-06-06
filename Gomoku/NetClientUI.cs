@@ -13,14 +13,6 @@ namespace Gomoku
 {
     public partial class NetClientUI : Form
     {
-        /* TODO
-         * • ip validation
-         * 
-         */
-
-        // IP validation
-        //https://stackoverflow.com/questions/11412956/what-is-the-best-way-of-validating-an-ip-address
-
         private IPAddress ip;
 
         public NetClientUI()
@@ -43,7 +35,7 @@ namespace Gomoku
         private void btnConnect_Click(object sender, EventArgs e)
         {
             // Connect
-            ip = IPAddress.Parse( tbxIP.Text);
+            ip = IPAddress.Parse(tbxIP.Text);
             DialogResult = DialogResult.OK;
         }
     }
