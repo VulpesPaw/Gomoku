@@ -145,15 +145,15 @@ namespace Gomoku
                     ResetToMainMenu();
                     return;
                 }
-                // break operation
+             
 
-                // random between 1 or 2
                 gbxSW.Visible = false;
                 gbxSW.Enabled = false;
 
                 gbxPlayArea.Visible = true;
                 gbxPlayArea.Enabled = true;
 
+                // random between 1 or 2
                 if(trueRandom(0, 2) > 0)
                 {
                     // server starts first
