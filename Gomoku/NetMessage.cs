@@ -9,8 +9,9 @@ using System.Windows.Forms;
 
 namespace Gomoku
 {
-    class NetMessage
+    internal class NetMessage
     {
+        // Recives messages over network, same for both client and server
         public async Task<string> translateNetworkMessage(TcpClient client)
         {
             try
@@ -22,23 +23,12 @@ namespace Gomoku
 
                 string msg = Encoding.UTF8.GetString(buffer, 0, n);
 
-
-                /*  if(msg[0] == '@')
-                   {
-                       msgCommands(msg);
-                       //callback(msg);
-                       return msg;
-                   }*/
-               // MessageBox.Show(msg, "Revieved message over network");
                 return msg;
-                // translateNetworkMessage(client);
-            } catch(Exception err)
+            } catch(Exception)
             {
-                MessageBox.Show(err.Message, "ERROR!");
+               
+                return "@n0";
             }
-            return null;
-
         }
-
     }
 }
