@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Threading;
 using System.Net;
 using System.Net.Sockets;
 using System.Windows.Forms;
@@ -33,54 +34,57 @@ namespace Gomoku
                 // waitForClient();
             } catch(Exception err)
             {
-                MessageBox.Show(err.Message, err.Source);
+                System.Diagnostics.Debug.WriteLine(err.Message);
             }
         }
 
-        public async Task<bool> waitForClient()
+        /// <summary>
+        /// Waits for a client to connect, is cancelable
+        /// </summary>
+        /// <param name="token">CancellationTokenSource, enables cancellation</param>
+        /// <returns>Boolean, true if a client connected, false if not</returns>
+        // 'Task<bool>' returns a task, which we can await
+        public async Task<bool> waitForClient(CancellationTokenSource token)
         {
             try
             {
-                client = await listener.AcceptTcpClientAsync();
-                client.NoDelay = true;
+                /*
+                 * By putting listener.Accept... in a task.Run we can wait for the task to compelte,
+                 * while including a cancelationtoken within it.
+                 * The CancellationToken is a thread-safe token which can cancel a thread/task
+                 */
 
-                return true;
+                bool res = false;
+                // Defines the task
+                Task clientWaiter = Task.Run(async () =>
+                {
+                    client = await listener.AcceptTcpClientAsync();
+                    client.NoDelay = true;
 
-            } catch(Exception err)
+                    res = true;
+                    return;
+                });
+
+                try
+                {
+                    // Runns task and waits for it to be finished or canceld. If task is cancelled, a OperationCanceledError is thrown
+                    clientWaiter.Wait(token.Token);
+
+                    // Dispoes task (not generally needed, but easy to do here)
+                    clientWaiter.Dispose();
+
+                    // Returns true if a client connected
+                    return res;
+                } catch(Exception)
+                {
+                    clientWaiter.Dispose();
+                    return res;
+                }
+            } catch(Exception)
             {
-                MessageBox.Show(err.Message, err.Source);
                 return false;
             }
         }
-
-        /*
-        public async Task<string> translateNetworkMessage(TcpClient client)
-        {
-            try
-            {
-                byte[] buffer = new byte[1024];
-                int n = 0;
-
-                n = await client.GetStream().ReadAsync(buffer, 0, buffer.Length);
-
-                string msg = Encoding.UTF8.GetString(buffer, 0, n);
-
-             /*  if(msg[0] == '@')
-                {
-                    msgCommands(msg);
-                    //callback(msg);
-                    return msg;
-                }*//*
-                MessageBox.Show(msg, "Revieved message over network");
-                return msg;
-                // translateNetworkMessage(client);
-            } catch(Exception err)
-            {
-                MessageBox.Show(err.Message, "ERROR!");
-            }
-            return null;
-        }*/
-        // class playfield?
 
         public async void sendData(string msg)
         {
@@ -91,11 +95,9 @@ namespace Gomoku
                     byte[] data = Encoding.UTF8.GetBytes(msg);
 
                     await client.GetStream().WriteAsync(data, 0, data.Length);
-                    System.Diagnostics.Debug.WriteLine("-- Net-S msg" + msg + " --");
                 }
-            } catch(Exception err)
+            } catch(Exception)
             {
-                MessageBox.Show(err.Message, "ERROR");
             }
         }
     }
