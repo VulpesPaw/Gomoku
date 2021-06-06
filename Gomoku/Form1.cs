@@ -19,17 +19,10 @@ namespace Gomoku
 {
     public partial class Form1 : Form
     {
-        /* TODO:
-         *  ▼ File IO
-         *  • Settings
-         *  • Network
-         *  • GameRules
-         *
-         */
-
+        // global access to settingsPath
         private string @settingsPath = Path.Combine(System.Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), @"c-gomoku");
-        //   private NetworkClient client = new NetworkClient();
 
+        // Tells local player-code whether they are server or client
         private enum e_active
         {
             none = 0,
@@ -44,87 +37,81 @@ namespace Gomoku
             0,0,0,0,0,0,0,0,0,
         };
 
-        private bool playerWin = false;
+        private enum e_playStatus
+        {
+            none = 0,
+            win = 1,
+            surrender = 2,
+            draw = 3
+        }
+
+        private e_playStatus playStatus;
         private bool pContinue = false;
         private int playpeace = 0;
+
+        // Allows messageages to be send on Form_closing
+        private NetworkServer server;
+
+        private NetworkClient client;
+
+        // Cancellationtokens enables thread-safe cancellation of threads/tasks
+        private CancellationTokenSource token;
 
         public Form1()
         {
             InitializeComponent();
-            this.Size = new Size(600, 600);
-            gbxPlayArea.Location = new Point(12, 12);
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void Form1_Load(object sender, EventArgs e)
         {
-            // This essentially creates a class, known as pg (type ServerForm)
-
-            //MessageBox.Show("LOL", Text);
-
-            //if()
-        }
-
-        private void button2_Click(object sender, EventArgs e)
-        {
-            // this.Hide();
-            // string @path = System.Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-            // System.Diagnostics.Debug.WriteLine(path);
-            /*
-            MessageBox.Show("Random ass message, lol!");
-            string @path = System.Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-            System.Diagnostics.Debug.WriteLine(path);
-
-            Task.Run(() =>
+            try
             {
-                var dialogResult = MessageBox.Show("Message", "Title", MessageBoxButtons.OKCancel);
-                if(dialogResult == DialogResult.OK)
-                    MessageBox.Show("OK CliWcked");
-                else
-                    MessageBox.Show("Cancel Clicked");
-            });
-            */
-            //  client.sendData("Frick");
-            //
-            //comboBoxFiller('x');
-            /*
-            cBx1.Items.Clear();
-            cBx1.Enabled = false;
-            cBx1.Text = 'X'.ToString();*/
-            pContinue = true;
-        }
-
-        private void btnStartGame_Click(object sender, EventArgs e)
-        {
-            playerWin = false;
-            playarea = new int[]{
-                       0,0,0,0,0,0,0,0,0,
-                    };
-            HostOptionsForm hostOptions = new HostOptionsForm();
-            DialogResult r = hostOptions.ShowDialog();
-            if(r == DialogResult.Yes)
+                string path = System.Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\c-gomoku\settings.hc";
+                System.Diagnostics.Debug.WriteLine(path);
+                SettingsForm settings = new SettingsForm(path);
+                bool gotSettings = settings.getSettings(path);
+                this.Size = new Size(600, 600);
+                gbxPlayArea.Location = new Point(12, 12);
+                if(gotSettings)
+                {
+                    applySettings(settings);
+                }
+            } catch(Exception)
             {
-                //Server is selected
-
-                initiateServer();
-            } else if(r == DialogResult.No)
-            {
-                //Client is selected
-                prepareGrid('O', 2);
-                initiateClient();
             }
         }
 
-        // The normal randomgenerator was for some reaseon predictible, thus true random generator.
-        private static int trueRandom(int min, int max)
+        // Starts game
+        private void btnStartGame_Click(object sender, EventArgs e)
         {
-            RNGCryptoServiceProvider rng = new RNGCryptoServiceProvider();
-            byte[] buffer = new byte[4];
+            try
+            {
+                // Resets values
+                playStatus = e_playStatus.none;
+                playarea = new int[]{
+                    0,0,0,0,0,0,0,0,0,
+                };
 
-            rng.GetBytes(buffer);
-            int result = BitConverter.ToInt32(buffer, 0);
-
-            return new Random(result).Next(min, max);
+                // Brings up hostOptions form
+                HostOptionsForm hostOptions = new HostOptionsForm();
+                DialogResult r = hostOptions.ShowDialog();
+                if(r == DialogResult.Yes)
+                {
+                    //Server is selected
+                    initiateServer();
+                } else if(r == DialogResult.No)
+                {
+                    //Client is selected
+                    prepareGrid('O', 2);
+                    initiateClient();
+                }
+            } catch(Exception)
+            {
+            }
         }
+
+        /* Server
+         * ----- */
 
         private async void initiateServer()
         {
@@ -133,15 +120,37 @@ namespace Gomoku
                 // Keep track if player is server or client
                 playerType = e_active.server;
 
-                NetworkServer server = new NetworkServer();
-
-                bool call = await server.waitForClient();
-                if(!call) return; // break operation
-
-                // random between 1 or 2
+                server = new NetworkServer();
 
                 gbxStartMenu.Visible = false;
                 gbxStartMenu.Enabled = false;
+                gbxSW.Location = new Point(12, 12);
+                gbxSW.Visible = true;
+                gbxSW.Enabled = true;
+
+                // Refreshed canellationToken
+                token = new CancellationTokenSource();
+
+                // This part makes the await cancelbel
+                bool call = false;
+                await Task.Run(async () =>
+                {
+                    call = await server.waitForClient(token);
+                });
+
+                // If watingproccess is canceld, returns to main menu
+                if(!call)
+                {
+                    server.listener.Stop();
+                    ResetToMainMenu();
+                    return;
+                }
+                // break operation
+
+                // random between 1 or 2
+                gbxSW.Visible = false;
+                gbxSW.Enabled = false;
+
                 gbxPlayArea.Visible = true;
                 gbxPlayArea.Enabled = true;
 
@@ -163,35 +172,28 @@ namespace Gomoku
                     initiateServerPlayer(server);
                     comboBoxFiller('X');
                 }
-
-                /* TODO:
-                 //* Initate game, send prompt to client
-                 * Draw who'll start (50/50?)
-                 //* Keep track of boards
-                 //* Change visisbility between groupboxes!
-                 *
-                 //* Add pictures to picBoxes,
-                 //* On click, call function, applay player symbol. If it is alrady filled, do nothing.
-                 //* Call oposing player of change, tell its thier turn.
-                 *
-                 */
             } catch(Exception err)
             {
-                MessageBox.Show(err.Message, Text);
+                if(err is SocketException || err is IOException)
+                {
+                    lostConnectionToOpponent();
+                }
             }
         }
 
+        // Starts the server-players turn
         private async void initiateServerPlayer(NetworkServer server)
         {
             try
             {
-                // string call = await server.translateNetworkMessage(server.client);
+                prepareGrid('X');
+
+                /*
+                 * Task.Run makes this proces running in a seperate thread, and thus not freezing the form. Then I'm awaitning this task.
+                 * The task per se, will wait for the player to make a move, thus setting pContinue to True
+                 */
 
                 // Checks pContinue every 200 ms, and awaits playeraction
-
-                prepareGrid('X');
-                // MessageBox.Show(cBx1.Text);
-
                 await Task.Run(() =>
                 {
                     do
@@ -204,50 +206,401 @@ namespace Gomoku
                 pContinue = false;
 
                 prepareGrid('X', 1);
-                System.Diagnostics.Debug.WriteLine("-- PlayerWin Status: " + playerWin);
 
-                // Checks if player has won
-                if(playerWin == true)
+                // Checks if player has won or surrended
+                if(playStatus == e_playStatus.win)
                 {
-                    // TODO: Stop game, player won
-
                     server.sendData("@w" + playpeace + "X");
-                    playerWon();
+                    ResetToMainMenu();
                     server.listener.Stop();
                     server.client.Close();
 
                     MessageBox.Show("Congratulations, you won over your oponent!", "End of Game");
 
                     return;
+                }
+                if(playStatus == e_playStatus.surrender)
+                {
+                    server.sendData("@s");
+                    ResetToMainMenu();
+                    return;
+                } else if(playStatus == e_playStatus.draw)
+                {
+                    Task.Run(() =>
+                    {
+                        MessageBox.Show("Game resulted in a Draw, none of you losers won =P", "Game Draw");
+                    });
+                    server.sendData("@d");
+                    ResetToMainMenu();
+                    return;
                 } else
                 {
                     server.sendData("@r" + playpeace + "X");
                 }
-                //!playpeace // peace chosen by player
 
                 await serverWaitingForPlayerMove(server);
-                if(playerWin == true)
+                if(playStatus == e_playStatus.surrender)
+                {
+                    server.sendData("@s");
+                    ResetToMainMenu();
+                    return;
+                }
+                if(playStatus == e_playStatus.win)
                 {
                     return;
                 }
                 initiateServerPlayer(server);
-            } catch(Exception e)
+            } catch(Exception err)
             {
-                MessageBox.Show(e.Message, Text);
+                if(err is SocketException || err is IOException)
+                {
+                    lostConnectionToOpponent();
+                }
             }
         }
 
-        private void playerWon()
+        private async Task<bool> serverWaitingForPlayerMove(NetworkServer server)
         {
-            gbxStartMenu.Visible = true;
-            gbxStartMenu.Enabled = true;
-            gbxPlayArea.Visible = false;
-            gbxPlayArea.Enabled = false;
-            prepareGrid(' ', 2);
+            try
+            {
+                // wait for opponets move
+                string callback = await server.translateNetworkMessage(server.client);
+
+                // Applies move
+                if(callback == null) return false;
+
+                // Processes commands
+                commandWorker(callback);
+                if(playStatus == e_playStatus.none)
+                {
+                    return true;
+                } else
+                {
+                    server.listener.Stop();
+                    server.client.Close();
+                    return false;
+                }
+            } catch(Exception)
+            {
+                return false;
+            }
         }
 
+        /* Client
+         * ---- */
+
+        // Starts client session
+        private async void initiateClient()
+        {
+            try
+            {
+                // Keep track if player is server or client
+                playerType = e_active.client;
+                NetClientUI clientUI = new NetClientUI();
+                DialogResult rClient = clientUI.ShowDialog();
+
+                if(rClient == DialogResult.OK)
+                {
+                    client = new NetworkClient(clientUI.Ip);
+
+                    await client.connectClient();
+
+                    if(!client.client.Connected)
+                    {
+                        return;
+                    }
+                    string res = await client.translateNetworkMessage(client.client);
+
+                    res = commandWorker(res);
+
+                    gbxStartMenu.Visible = false;
+                    gbxStartMenu.Enabled = false;
+                    gbxPlayArea.Visible = true;
+                    gbxPlayArea.Enabled = true;
+
+                    if(res == "t2")
+                    {
+                        prepareGrid('O', 3);
+                        initiateClientPlayer(client);
+                    } else
+                    {
+                        prepareGrid('O', 2);
+                        await clientWaitingForPlayerMove(client);
+                        initiateClientPlayer(client);
+                    }
+
+                    comboBoxFiller('O');
+                } else if(rClient == DialogResult.Cancel)
+                {
+                    return;
+                }
+            } catch(Exception err)
+            {
+                if(err is SocketException || err is IOException)
+                {
+                    MessageBox.Show("Seems like you have feed a none active IP address, make sure your host is online");
+                }
+            }
+        }
+
+        // Starts client-players turn
+        private async void initiateClientPlayer(NetworkClient client)
+        {
+            try
+            {
+                prepareGrid('O');
+
+                // Checks pContinue every 200 ms, and awaits playeraction
+                await Task.Run(() =>
+               {
+                   do
+                   {
+                       Thread.Sleep(200);
+                   } while(pContinue == false);
+               });
+
+                // resets pContinue
+                pContinue = false;
+
+                prepareGrid('O', 1);
+
+                // Checks play statuses
+                if(playStatus == e_playStatus.win)
+                {
+                    client.sendData("@w" + playpeace + "X");
+                    ResetToMainMenu();
+
+                    client.client.Close();
+                    MessageBox.Show("Congratulations, you won over your oponent!", "End of Game");
+                    return;
+                }
+                if(playStatus == e_playStatus.surrender)
+                {
+                    client.sendData("@s");
+                    ResetToMainMenu();
+                    return;
+                } else if(playStatus == e_playStatus.draw)
+                {
+                    Task.Run(() =>
+                    {
+                        MessageBox.Show("Game resulted in a Draw, none of you losers won =P", "Game Draw");
+                    });
+                    client.sendData("@d");
+                    ResetToMainMenu();
+                    return;
+                } else
+                {
+                    client.sendData("@r" + playpeace + "O");
+                }
+
+                await clientWaitingForPlayerMove(client);
+
+                if(playStatus == e_playStatus.surrender)
+                {
+                    client.sendData("@s");
+                    ResetToMainMenu();
+                    return;
+                }
+                if(playStatus == e_playStatus.win)
+                {
+                    return;
+                }
+                initiateClientPlayer(client);
+            } catch(Exception err)
+            {
+                if(err is SocketException || err is IOException)
+                {
+                    lostConnectionToOpponent();
+                }
+            }
+        }
+
+        // Client waiting for server-player to make a move
+        private async Task<bool> clientWaitingForPlayerMove(NetworkClient client)
+        {
+            try
+            {
+                // wait for opponets move
+                string callback = await client.translateNetworkMessage(client.client);
+
+                // Applies move
+                if(callback == null) return false;
+
+                commandWorker(callback);
+
+                if(playStatus == e_playStatus.none)
+                {
+                    return true;
+                } else
+                {
+                    client.client.Close();
+
+                    return false;
+                }
+            } catch(Exception err)
+            {
+                return false;
+            }
+        }
+
+        // Handles diffetent commands recieved over the network
+        private string commandWorker(string command)
+        {
+            try
+            {
+                ComboBox[] cbxList =
+                {
+                    cBx1,cBx2,cBx3,cBx4,cBx5,cBx6,cBx7,cBx8,cBx9
+                };
+                switch(command[1])
+                {
+                    case 'r': // r - replace
+
+                        cbxList[int.Parse(command[2].ToString())].Items.Clear();
+                        cbxList[int.Parse(command[2].ToString())].Text = command[3].ToString();
+                        cbxList[int.Parse(command[2].ToString())].Enabled = false;
+
+                        break;
+
+                    case 'w': // w - win
+
+                        cbxList[int.Parse(command[2].ToString())].Items.Clear();
+                        cbxList[int.Parse(command[2].ToString())].Text = command[3].ToString();
+                        cbxList[int.Parse(command[2].ToString())].Enabled = false;
+                        ResetToMainMenu();
+
+                        MessageBox.Show("Tearful Defeat! Your opponent won over you!", "End of Game");
+                        playStatus = e_playStatus.win;
+                        break;
+
+                    case 'n': // n - network
+                        if(command[2] == '0')
+                        {
+                            lostConnectionToOpponent();
+                        }
+                        break;
+
+                    case 's': // s - surrender
+                        ResetToMainMenu();
+                        MessageBox.Show("Your opponent surrenderd, you won!", "End of Game");
+                        playStatus = e_playStatus.win;
+                        break;
+
+                    case 'd': // d - draw
+                        ResetToMainMenu();
+                        MessageBox.Show("Game resulted in a draw, both of you lost looser!", "Gameresult Draw");
+                        playStatus = e_playStatus.win;
+                        break;
+
+                    case 't': // t for turn
+                        return command.Substring(1);
+                        break;
+                }
+                return null;
+            } catch(Exception)
+            {
+                return null;
+            }
+        }
+
+        /* Settings
+         * ----- */
+
+        private void btnSettings_Click(object sender, EventArgs e)
+        {
+            SettingsForm settingsForm = new SettingsForm(settingsPath, "settings.hc");
+
+            DialogResult r = settingsForm.ShowDialog();
+
+            if(r == DialogResult.OK)
+            {
+                applySettings(settingsForm);
+            }
+        }
+
+        private void applySettings(SettingsForm settings)
+        {
+            try
+            {
+                if(settings.darkmode == "True")
+                {
+                    this.BackColor = Color.Black;
+                    this.ForeColor = Color.White;
+                    foreach(Control c in this.Controls)
+                    {
+                        UpdateColorControls(c, Color.Black, Color.White);
+                    }
+                } else
+                {
+                    this.BackColor = SystemColors.Control;
+                    this.ForeColor = SystemColors.ControlText;
+                    foreach(Control c in this.Controls)
+                    {
+                        UpdateColorControls(c, SystemColors.Control, SystemColors.ControlText);
+                    }
+                }
+                if(settings.gameTag == "")
+                {
+                    lblGameTag.Text = "";
+                } else
+                {
+                    lblGameTag.Text = "Welcome: " + settings.gameTag;
+                    lblUndertag.Text = "Ready to beat some noobs?";
+                }
+            } catch(Exception)
+            {
+                MessageBox.Show("An error ocured while applieng settings", Text);
+            }
+        }
+
+        // Updates UI colours
+        public void UpdateColorControls(Control myControl, Color bg, Color fg)
+        {
+            try
+            {
+                myControl.BackColor = bg;
+                myControl.ForeColor = fg;
+                foreach(Control subC in myControl.Controls)
+                {
+                    UpdateColorControls(subC, bg, fg);
+                }
+            } catch(Exception)
+            {
+            }
+        }
+
+        // Fills comboxes with values
+        public void comboBoxFiller(char chard, bool fillAll = true, int boxToFill = 0)
+        {
+            try
+            {
+                ComboBox[] cbxList =
+                {
+                    cBx1,cBx2,cBx3,cBx4,cBx5,cBx6,cBx7,cBx8,cBx9
+                };
+                if(fillAll)
+                {
+                    foreach(ComboBox box in cbxList)
+                    {
+                        box.Items.Clear();
+                        box.Items.Add("");
+                        box.Items.Add(chard);
+                    }
+                } else if(!fillAll)
+                {
+                    cbxList[boxToFill].Enabled = false;
+                }
+            } catch(Exception err)
+            {
+                MessageBox.Show(err.Message, Text);
+            }
+        }
+
+        /* Grid / UI handlers
+         * ----- */
+
         private void prepareGrid(char player, int fun = 0)
-        {// fun -> function 1 or 2
+        {
             try
             {
                 ComboBox[] cbxList = {
@@ -297,368 +650,133 @@ namespace Gomoku
                         box.SelectedIndex = 0;
                     }
                 }
-                //! Destroy Net Threads! Close connections after game!
-                // TODO READ ABOVE!
             } catch(Exception e)
             {
-                MessageBox.Show(e.Message, Text);
+                System.Diagnostics.Debug.WriteLine(e.Message);
             }
         }
 
-        private async Task<bool> serverWaitingForPlayerMove(NetworkServer server)
+        private void ResetToMainMenu()
         {
-            // wait for opponets move
-            string callback = await server.translateNetworkMessage(server.client);
-
-            // Applies move
-            if(callback == null) return false; // TODO: end game
-
-            commandWorker(callback);
-            if(playerWin == false)
-            {
-                return true;
-            } else
-            {
-                server.listener.Stop();
-                server.client.Close();
-                return false;
-                // something
-            }
+            gbxStartMenu.Visible = true;
+            gbxStartMenu.Enabled = true;
+            gbxPlayArea.Visible = false;
+            gbxPlayArea.Enabled = false;
+            gbxSW.Enabled = false;
+            gbxSW.Visible = false;
+            prepareGrid(' ', 2);
         }
 
-        private string commandWorker(string command)
+        // The normal randomgenerator was for some reaseon predictible, thus true random generator. Normally used for crypto seeds.
+        private static int trueRandom(int min, int max)
         {
-            ComboBox[] cbxList =
-              {
-            cBx1,cBx2,cBx3,cBx4,cBx5,cBx6,cBx7,cBx8,cBx9
-                 };
-            //? MessageBox.Show(command);
+            RNGCryptoServiceProvider rng = new RNGCryptoServiceProvider();
+            byte[] buffer = new byte[4];
 
-            switch(command[1])
-            {
-                case 'r': // r for replace
+            rng.GetBytes(buffer);
+            int result = BitConverter.ToInt32(buffer, 0);
 
-                    cbxList[int.Parse(command[2].ToString())].Items.Clear();
-                    cbxList[int.Parse(command[2].ToString())].Text = command[3].ToString();
-                    cbxList[int.Parse(command[2].ToString())].Enabled = false;
-                    //?  MessageBox.Show(command);
-                    break;
-
-                case 'w':
-
-                    cbxList[int.Parse(command[2].ToString())].Items.Clear();
-                    cbxList[int.Parse(command[2].ToString())].Text = command[3].ToString();
-                    cbxList[int.Parse(command[2].ToString())].Enabled = false;
-                    playerWon();
-
-                    MessageBox.Show("Tearful Defeat! Your opponent won over you!", "End of Game");
-                    playerWin = true;
-                    //end game
-                    break;
-
-                case 't': // t for turn
-                    return command.Substring(1);
-                    break;
-                    // easly expandible code
-            }
-            return null;
+            return new Random(result).Next(min, max);
         }
 
-        private async void initiateClient()
-        {
-            try
-            {
-                // Keep track if player is server or client
-                playerType = e_active.client;
-                NetClientUI clientUI = new NetClientUI();
-                DialogResult rClient = clientUI.ShowDialog();
+        /* Combobox handlers
+         * ----- */
 
-                if(rClient == DialogResult.OK)
-                {
-                    NetworkClient client = new NetworkClient(clientUI.Ip);
-
-                    await client.connectClient();
-
-                    string res = await client.translateNetworkMessage(client.client);
-                    res = commandWorker(res);
-                    MessageBox.Show(res);
-
-                    gbxStartMenu.Visible = false;
-                    gbxStartMenu.Enabled = false;
-                    gbxPlayArea.Visible = true;
-                    gbxPlayArea.Enabled = true;
-
-                    if(res == "t2")
-                    {
-                        prepareGrid('O', 3);
-                        initiateClientPlayer(client);
-                    } else
-                    {
-                        prepareGrid('O', 2);
-                        await clientWaitingForPlayerMove(client);
-                        initiateClientPlayer(client);
-                    }
-
-                    comboBoxFiller('O');
-                } else if(rClient == DialogResult.Cancel)
-                {
-                    return;
-                }
-            } catch(Exception err)
-            {
-                MessageBox.Show(err.Message, Text);
-            }
-        }
-
-        private async void initiateClientPlayer(NetworkClient client)
-        {
-            System.Diagnostics.Debug.WriteLine("-- Client Connected - " + client.client.Connected);
-            // string call = await server.translateNetworkMessage(server.client);
-
-            // Checks pContinue every 200 ms, and awaits playeraction
-
-            prepareGrid('O');
-
-            await Task.Run(() =>
-            {
-                System.Diagnostics.Debug.WriteLine("-- Client Connected waitimg- " + client.client.Connected);
-
-                do
-                {
-                    Thread.Sleep(200);
-                } while(pContinue == false);
-            });
-            //! BUG: Client never fully cloeses!
-
-            // resets pContinue
-            pContinue = false;
-
-            prepareGrid('O', 1);
-
-            System.Diagnostics.Debug.WriteLine("-- PlayerWin Status: " + playerWin);
-            // Checks if player has won
-            if(playerWin == true)
-            {
-                // TODO: Stop game, player won
-
-                client.sendData("@w" + playpeace + "X");
-                playerWon();
-
-                MessageBox.Show("-- Closing client 1 --");
-                System.Diagnostics.Debug.WriteLine("-- Client Connected bef 2--" + client.client.Connected);
-
-                client.client.Close();
-                System.Diagnostics.Debug.WriteLine("-- Client Connected af 2--" + client.client.Connected);
-
-                return;
-            } else
-            {
-                System.Diagnostics.Debug.WriteLine("-- Shall send msg, " + client.client.Connected + "--");
-                client.sendData("@r" + playpeace + "O");
-            }
-            //!playpeace // peace chosen by player
-
-            await clientWaitingForPlayerMove(client);
-            if(playerWin == true)
-            {
-                return;
-            }
-            initiateClientPlayer(client);
-        }
-
-        private async Task<bool> clientWaitingForPlayerMove(NetworkClient client)
-        {
-            // wait for opponets move
-            string callback = await client.translateNetworkMessage(client.client);
-
-            // Applies move
-            if(callback == null) return false; // TODO: end game
-
-            commandWorker(callback);
-            System.Diagnostics.Debug.WriteLine("-- PlayerWin af commandWorker --" + playerWin);
-            if(playerWin == false)
-            {
-                return true;
-            } else
-            {
-                System.Diagnostics.Debug.WriteLine("-- PlayerWin was true --" + playerWin);
-
-                MessageBox.Show("-- Closing client 1 --");
-
-                System.Diagnostics.Debug.WriteLine("-- Client Connected bef 1--" + client.client.Connected);
-
-                client.client.Close();
-
-                System.Diagnostics.Debug.WriteLine("-- Client Connected af 1--" + client.client.Connected);
-
-                MessageBox.Show("-- Client Connected--" + client.client.Connected);
-
-                return false;
-                // something
-            }
-        }
-
-        private void btnSettings_Click(object sender, EventArgs e)
-        {
-            SettingsForm settingsForm = new SettingsForm(settingsPath, "settings.hc");
-
-            DialogResult r = settingsForm.ShowDialog();
-
-            System.Diagnostics.Debug.WriteLine(r);
-
-            if(r == DialogResult.OK)
-            {
-                applySettings(settingsForm);
-            }
-        }
-
-        private void applySettings(SettingsForm settings)
-        {
-            if(settings.darkmode == "True")
-            {
-                this.BackColor = Color.Black;
-                this.ForeColor = Color.White;
-                foreach(Control c in this.Controls)
-                {
-                    UpdateColorControls(c, Color.Black, Color.White);
-                }
-            } else
-            {
-                this.BackColor = SystemColors.Control;
-                this.ForeColor = SystemColors.ControlText;
-                foreach(Control c in this.Controls)
-                {
-                    UpdateColorControls(c, SystemColors.Control, SystemColors.ControlText);
-                }
-            }
-        }
-
-        // Exits application
-        private void btnExit_Click(object sender, EventArgs e)
-        {
-            // Code 0 are default exit
-            Environment.Exit(0);
-        }
-
-        public void UpdateColorControls(Control myControl, Color bg, Color fg)
-        {
-            myControl.BackColor = bg;
-            myControl.ForeColor = fg;
-            foreach(Control subC in myControl.Controls)
-            {
-                UpdateColorControls(subC, bg, fg);
-            }
-        }
-
-        private void Form1_Load(object sender, EventArgs e)
-        {
-            try
-            {
-                string path = System.Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\c-gomoku\settings.hc";
-                System.Diagnostics.Debug.WriteLine(path);
-                SettingsForm settings = new SettingsForm(path);
-                bool gotSettings = settings.getSettings(path);
-
-                if(gotSettings)
-                {
-                    applySettings(settings);
-                }
-            } catch(Exception err)
-            {
-                MessageBox.Show(err.Message, "Error: Damnation to you!");
-            }
-        }
-
-        public void comboBoxFiller(char chard, bool fillAll = true, int boxToFill = 0)
-        {
-            ComboBox[] cbxList =
-       {
-            cBx1,cBx2,cBx3,cBx4,cBx5,cBx6,cBx7,cBx8,cBx9
-        };
-            if(fillAll)
-            {
-                foreach(ComboBox box in cbxList)
-                {
-                    box.Items.Clear();
-                    box.Items.Add("");
-                    box.Items.Add(chard);
-                }
-            } else if(!fillAll)
-            {
-                cbxList[boxToFill].Enabled = false;
-                /* cbxList[boxToFill].Items.Clear();
-                 cbxList[boxToFill].Items.Add(chard);*/
-            }
-        }
-
+        // Handles combobox actions for different situations
         private void cBxAction(int cbx)
         {
-            cbx--; // convert from cBx number to array-number
-            // playpeace is accessible by server/client runner
-            playpeace = cbx;
-            System.Diagnostics.Debug.WriteLine("-- cbx " + cbx + " --");
-            switch(playerType)
+            try
             {
-                case e_active.none:
-                    break;
+                cbx--;
+                playpeace = cbx;
+                switch(playerType)
+                {
+                    case e_active.none:
+                        break;
 
-                case e_active.server:
-                    playarea[cbx] = (int)e_active.server;
-                    comboBoxFiller('X', false, cbx);
-                    checkForRow((int)e_active.server);
+                    case e_active.server:
+                        playarea[cbx] = (int)e_active.server;
+                        comboBoxFiller('X', false, cbx);
+                        checkForRow((int)e_active.server);
+                        break;
 
-                    break;
-
-                case e_active.client:
-                    playarea[cbx] = (int)e_active.client;
-                    comboBoxFiller('O', false, cbx);
-                    checkForRow((int)e_active.client);
-                    break;
+                    case e_active.client:
+                        playarea[cbx] = (int)e_active.client;
+                        comboBoxFiller('O', false, cbx);
+                        checkForRow((int)e_active.client);
+                        break;
+                }
+            } catch(Exception)
+            {
             }
         }
 
+        // Checks for playerwin and for draw
         private void checkForRow(int checker)
         {
-            // colums
-            if(playarea[0] == checker && playarea[1] == checker && playarea[2] == checker)
+            try
             {
-                playerWin = true;
-            }
-            if(playarea[3] == checker && playarea[4] == checker && playarea[5] == checker)
-            {
-                playerWin = true;
-            }
-            if(playarea[6] == checker && playarea[7] == checker && playarea[8] == checker)
-            {
-                playerWin = true;
-            }
+                // colums
+                if(playarea[0] == checker && playarea[1] == checker && playarea[2] == checker)
+                {
+                    playStatus = e_playStatus.win;
+                }
+                if(playarea[3] == checker && playarea[4] == checker && playarea[5] == checker)
+                {
+                    playStatus = e_playStatus.win;
+                }
+                if(playarea[6] == checker && playarea[7] == checker && playarea[8] == checker)
+                {
+                    playStatus = e_playStatus.win;
+                }
 
-            // rows
-            if(playarea[0] == checker && playarea[3] == checker && playarea[6] == checker)
-            {
-                playerWin = true;
-            }
-            if(playarea[1] == checker && playarea[4] == checker && playarea[7] == checker)
-            {
-                playerWin = true;
-            }
-            if(playarea[2] == checker && playarea[5] == checker && playarea[8] == checker)
-            {
-                playerWin = true;
-            }
+                // rows
+                if(playarea[0] == checker && playarea[3] == checker && playarea[6] == checker)
+                {
+                    playStatus = e_playStatus.win;
+                }
+                if(playarea[1] == checker && playarea[4] == checker && playarea[7] == checker)
+                {
+                    playStatus = e_playStatus.win;
+                }
+                if(playarea[2] == checker && playarea[5] == checker && playarea[8] == checker)
+                {
+                    playStatus = e_playStatus.win;
+                }
 
-            // Diagonal
-            if(playarea[0] == checker && playarea[4] == checker && playarea[8] == checker)
-            {
-                playerWin = true;
-            }
-            if(playarea[2] == checker && playarea[4] == checker && playarea[6] == checker)
-            {
-                playerWin = true;
-            }
+                // Diagonal
+                if(playarea[0] == checker && playarea[4] == checker && playarea[8] == checker)
+                {
+                    playStatus = e_playStatus.win;
+                }
+                if(playarea[2] == checker && playarea[4] == checker && playarea[6] == checker)
+                {
+                    playStatus = e_playStatus.win;
+                }
 
-            pContinue = true;
+                // Checks for draw
+                bool draw = true;
+                foreach(int i in playarea)
+                {
+                    if(i == 0)
+                    {
+                        draw = false;
+                    }
+                }
+                if(draw)
+                {
+                    playStatus = e_playStatus.draw;
+                }
+
+                pContinue = true;
+            } catch(Exception)
+            {
+                MessageBox.Show("Winn checkproccess threw an Error", Text);
+            }
         }
+
+        /* Comboboxes
+         * ---- */
 
         private void cBx1_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -730,6 +848,56 @@ namespace Gomoku
             {
                 cBxAction(9);
             }
+        }
+
+        private void btnCancel_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                token.Cancel();
+            } catch(Exception)
+            {
+            }
+        }
+
+        /* Closing Arguments
+         * ---- */
+
+        // Exits application
+        private void btnExit_Click(object sender, EventArgs e)
+        {
+            // Code 0 are default exit
+            Environment.Exit(0);
+        }
+
+        // Surrenders
+        private void btnSurrender_Click(object sender, EventArgs e)
+        {
+            // Shows messagebox while rest of code can exicute
+            Task.Run(() =>
+            {
+                MessageBox.Show("You have surrenderd, your opponent won!", "End of Game");
+            });
+
+            playStatus = e_playStatus.surrender;
+            pContinue = true;
+        }
+
+        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if(playerType == e_active.client)
+            {
+                client.sendData("@s");
+            } else if(playerType == e_active.server)
+            {
+                server.sendData("@s");
+            }
+        }
+
+        private void lostConnectionToOpponent()
+        {
+            ResetToMainMenu();
+            MessageBox.Show("It seems you lost connection to your opponent, therefore the game canceled", "Lost connection to opponent");
         }
     }
 }
