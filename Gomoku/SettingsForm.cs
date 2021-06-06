@@ -27,7 +27,6 @@ namespace Gomoku
 
             // Applies inital settings if present
             bool dirExist = fileHandler.checkForDir(fullPath);
-            System.Diagnostics.Debug.WriteLine(dirExist);
             if(dirExist)
             {
                 string[] settings = fileHandler.FileOutput(fullPath);
@@ -68,38 +67,31 @@ namespace Gomoku
 
         private void SettingsForm_FormClosed(object sender, FormClosedEventArgs e)
         {
-            //  DialogResult = DialogResult.Cancel;
+            DialogResult = DialogResult.Cancel;
         }
 
         private void btnSave_Click(object sender, EventArgs e)
         {
             if(String.IsNullOrWhiteSpace(tbxGameTag.Text))
             {
-                return;
+                gameTag = "";
+            } else
+            {
+                gameTag = tbxGameTag.Text;
             }
-            gameTag = tbxGameTag.Text;
             darkmode = cbxDM.Checked.ToString();
             string[] settings = { gameTag, darkmode };
 
             fileHandler.FileInput(settings, dirPath, filename);
-            //settings = fileHandler.FileOutput(fullPath);
-            // System.Diagnostics.Debug.WriteLine(settings.Length);
-            // System.Diagnostics.Debug.WriteLine(settings);
 
             DialogResult = DialogResult.OK;
-
-            //this.Close();
-
-            /* TODO
-             * Check and read current applied settings
-             * Applay current settings to form-screen
-             * Save settings on 'save'-press
-             * When incorrectly filled, prompt!
-             *
-             *
-             */
         }
 
+        /// <summary>
+        /// Gets settings
+        /// </summary>
+        /// <param name="fullPath">The full paht including filename and extion</param>
+        /// <returns>Boolean: True if settings was found, false if not</returns>
         public bool getSettings(string @fullPath)
         {
             bool dirExist = fileHandler.checkForDir(fullPath);
