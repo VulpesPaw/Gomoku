@@ -13,7 +13,6 @@ namespace Gomoku
     /// </summary>
     internal class FileIO
     {
-  
         /// <summary>
         /// Writes data to seleced Path, if dir does not exit, it will be created
         /// </summary>
@@ -34,17 +33,14 @@ namespace Gomoku
                 FileStream str = new FileStream(dirPath, mode, access);
                 StreamWriter writer = new StreamWriter(str);
 
-                //System.Diagnostics.Debug.WriteLine(dataArr);
                 foreach(var item in dataArr)
                 {
-                    //System.Diagnostics.Debug.WriteLine(item);
-                    //System.Diagnostics.Debug.WriteLine(item.ToString());
                     writer.WriteLine(item.ToString());
                 }
                 writer.Dispose();
             } catch(Exception e)
             {
-                MessageBox.Show(e.Message, "FileInput error occured");
+                System.Diagnostics.Debug.WriteLine(e.Message, "FileInput error occured");
             }
         }
 
@@ -55,15 +51,17 @@ namespace Gomoku
         /// /// <param name="dirPath"><see cref="System.String"/>dirPath are directory and filename</params>
         /// <param name="dirPath"><see cref="System.String"/>dirPath are directory and filename</params>
 
-        public string[] FileOutput(string @dirPath)
+        public string[] FileOutput(string @dirPath, string @filename)
         {
             try
             {
                 if(!checkForDir(dirPath))
                 {
                     throw new ArgumentException("Directorypath or file does not exist!", dirPath);
-                   // return null;
                 }
+                dirPath = Path.Combine(dirPath, filename);
+                System.Diagnostics.Debug.Write(dirPath);
+
                 FileAccess access = FileAccess.Read;
                 FileMode mode = FileMode.Open;
 
@@ -73,11 +71,11 @@ namespace Gomoku
                 string[] lines = File.ReadAllLines(dirPath);
 
                 reader.Dispose();
-              
+
                 return lines;
             } catch(Exception e)
             {
-                MessageBox.Show(e.Message, "FileOutput error occured");
+                System.Diagnostics.Debug.WriteLine(e.Message + "FileOutput error occured");
                 return null;
             }
         }
@@ -90,11 +88,17 @@ namespace Gomoku
         /// (Bool)False: if dir already exist</return>
         public bool createDir(string @dirPath)
         {
-            if(!Directory.Exists(dirPath))
+            try
             {
-                Directory.CreateDirectory(dirPath);
-                return true;
-            } else
+                if(!Directory.Exists(dirPath))
+                {
+                    Directory.CreateDirectory(dirPath);
+                    return true;
+                } else
+                {
+                    return false;
+                }
+            } catch(Exception)
             {
                 return false;
             }
@@ -107,9 +111,15 @@ namespace Gomoku
         /// <returns>True if dir exists, else False</returns>
         public bool checkForDir(string @dirPath)
         {
-            if(!Directory.Exists(dirPath) && dirPath != null)
+            try
             {
-                return true;
+                System.Diagnostics.Debug.WriteLine(dirPath);
+                if(Directory.Exists(dirPath) && dirPath != null)
+                {
+                    return true;
+                }
+            } catch(Exception)
+            {
             }
             return false;
         }
