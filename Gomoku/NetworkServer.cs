@@ -90,11 +90,14 @@ namespace Gomoku
         {
             try
             {
-                if(client.Connected)
+                if(client != null)
                 {
-                    byte[] data = Encoding.UTF8.GetBytes(msg);
+                    if(client.Connected)
+                    {
+                        byte[] data = Encoding.UTF8.GetBytes(msg);
 
-                    await client.GetStream().WriteAsync(data, 0, data.Length);
+                        await client.GetStream().WriteAsync(data, 0, data.Length);
+                    }
                 }
             } catch(Exception)
             {
