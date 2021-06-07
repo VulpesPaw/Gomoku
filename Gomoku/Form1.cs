@@ -66,16 +66,14 @@ namespace Gomoku
         {
             try
             {
-                string path = System.Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\c-gomoku\settings.hc";
-                System.Diagnostics.Debug.WriteLine(path);
-                SettingsForm settings = new SettingsForm(path);
-                bool gotSettings = settings.getSettings(path);
-                this.Size = new Size(600, 600);
-                gbxPlayArea.Location = new Point(12, 12);
+                SettingsForm settings = new SettingsForm(settingsPath, "settings.hc");
+                bool gotSettings = settings.getSettings(settings.dirPath, settings.filename);
                 if(gotSettings)
                 {
                     applySettings(settings);
                 }
+                this.Size = new Size(600, 600);
+                gbxPlayArea.Location = new Point(12, 12);
             } catch(Exception)
             {
             }
@@ -145,7 +143,6 @@ namespace Gomoku
                     ResetToMainMenu();
                     return;
                 }
-             
 
                 gbxSW.Visible = false;
                 gbxSW.Enabled = false;
@@ -206,6 +203,7 @@ namespace Gomoku
                 pContinue = false;
 
                 prepareGrid('X', 1);
+                System.Diagnostics.Debug.WriteLine("--" + playStatus);
 
                 // Checks if player has won or surrended
                 if(playStatus == e_playStatus.win)
@@ -363,7 +361,7 @@ namespace Gomoku
                 pContinue = false;
 
                 prepareGrid('O', 1);
-
+                System.Diagnostics.Debug.WriteLine("--" + playStatus);
                 // Checks play statuses
                 if(playStatus == e_playStatus.win)
                 {
@@ -437,7 +435,7 @@ namespace Gomoku
 
                     return false;
                 }
-            } catch(Exception err)
+            } catch(Exception)
             {
                 return false;
             }
@@ -455,11 +453,20 @@ namespace Gomoku
                 switch(command[1])
                 {
                     case 'r': // r - replace
-
                         cbxList[int.Parse(command[2].ToString())].Items.Clear();
                         cbxList[int.Parse(command[2].ToString())].Text = command[3].ToString();
                         cbxList[int.Parse(command[2].ToString())].Enabled = false;
+                        switch(playerType)
+                        {
+                            case e_active.server:
 
+                                playarea[int.Parse(command[2].ToString())] = (int)e_active.client;
+                                break;
+
+                            case e_active.client:
+                                playarea[int.Parse(command[2].ToString())] = (int)e_active.server;
+                                break;
+                        }
                         break;
 
                     case 'w': // w - win
@@ -467,6 +474,16 @@ namespace Gomoku
                         cbxList[int.Parse(command[2].ToString())].Items.Clear();
                         cbxList[int.Parse(command[2].ToString())].Text = command[3].ToString();
                         cbxList[int.Parse(command[2].ToString())].Enabled = false;
+                        switch(playerType)
+                        {
+                            case e_active.server:
+                                playarea[int.Parse(command[2].ToString())] = 2;
+                                break;
+
+                            case e_active.client:
+                                playarea[int.Parse(command[2].ToString())] = 1;
+                                break;
+                        }
                         ResetToMainMenu();
 
                         MessageBox.Show("Tearful Defeat! Your opponent won over you!", "End of Game");
@@ -508,13 +525,18 @@ namespace Gomoku
 
         private void btnSettings_Click(object sender, EventArgs e)
         {
-            SettingsForm settingsForm = new SettingsForm(settingsPath, "settings.hc");
-
-            DialogResult r = settingsForm.ShowDialog();
-
-            if(r == DialogResult.OK)
+            try
             {
-                applySettings(settingsForm);
+                SettingsForm settingsForm = new SettingsForm(settingsPath, "settings.hc");
+
+                DialogResult r = settingsForm.ShowDialog();
+
+                if(r == DialogResult.OK)
+                {
+                    applySettings(settingsForm);
+                }
+            } catch(Exception)
+            {
             }
         }
 
@@ -549,7 +571,7 @@ namespace Gomoku
                 }
             } catch(Exception)
             {
-                MessageBox.Show("An error ocured while applieng settings", Text);
+                System.Diagnostics.Debug.WriteLine("An error ocured while applieng settings, " + Text);
             }
         }
 
@@ -592,7 +614,7 @@ namespace Gomoku
                 }
             } catch(Exception err)
             {
-                MessageBox.Show(err.Message, Text);
+               System.Diagnostics.Debug.Write(err.Message, Text);
             }
         }
 
@@ -769,9 +791,9 @@ namespace Gomoku
                 }
 
                 pContinue = true;
-            } catch(Exception)
+            } catch(Exception err)
             {
-                MessageBox.Show("Winn checkproccess threw an Error", Text);
+                System.Diagnostics.Debug.WriteLine(err.Message);
             }
         }
 
