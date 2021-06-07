@@ -31,6 +31,8 @@ namespace Gomoku
         {
             this.label1 = new System.Windows.Forms.Label();
             this.gbxStartMenu = new System.Windows.Forms.GroupBox();
+            this.lblUndertag = new System.Windows.Forms.Label();
+            this.lblGameTag = new System.Windows.Forms.Label();
             this.btnExit = new System.Windows.Forms.Button();
             this.btnSettings = new System.Windows.Forms.Button();
             this.btnStartGame = new System.Windows.Forms.Button();
@@ -52,8 +54,6 @@ namespace Gomoku
             this.gbxSW = new System.Windows.Forms.GroupBox();
             this.btnCancel = new System.Windows.Forms.Button();
             this.label5 = new System.Windows.Forms.Label();
-            this.lblGameTag = new System.Windows.Forms.Label();
-            this.lblUndertag = new System.Windows.Forms.Label();
             this.gbxStartMenu.SuspendLayout();
             this.gbxPlayArea.SuspendLayout();
             this.gbxSW.SuspendLayout();
@@ -81,6 +81,25 @@ namespace Gomoku
             this.gbxStartMenu.Size = new System.Drawing.Size(560, 537);
             this.gbxStartMenu.TabIndex = 3;
             this.gbxStartMenu.TabStop = false;
+            // 
+            // lblUndertag
+            // 
+            this.lblUndertag.AutoSize = true;
+            this.lblUndertag.Location = new System.Drawing.Point(238, 190);
+            this.lblUndertag.Name = "lblUndertag";
+            this.lblUndertag.Size = new System.Drawing.Size(0, 13);
+            this.lblUndertag.TabIndex = 4;
+            this.lblUndertag.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // lblGameTag
+            // 
+            this.lblGameTag.AutoSize = true;
+            this.lblGameTag.Location = new System.Drawing.Point(238, 167);
+            this.lblGameTag.Name = "lblGameTag";
+            this.lblGameTag.Size = new System.Drawing.Size(10, 13);
+            this.lblGameTag.TabIndex = 4;
+            this.lblGameTag.Text = " ";
+            this.lblGameTag.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // btnExit
             // 
@@ -348,25 +367,6 @@ namespace Gomoku
             this.label5.Size = new System.Drawing.Size(161, 13);
             this.label5.TabIndex = 0;
             this.label5.Text = "Waiting for a player to connect...";
-            // 
-            // lblGameTag
-            // 
-            this.lblGameTag.AutoSize = true;
-            this.lblGameTag.Location = new System.Drawing.Point(238, 167);
-            this.lblGameTag.Name = "lblGameTag";
-            this.lblGameTag.Size = new System.Drawing.Size(64, 13);
-            this.lblGameTag.TabIndex = 4;
-            this.lblGameTag.Text = "lblGameTag";
-            this.lblGameTag.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // lblUndertag
-            // 
-            this.lblUndertag.AutoSize = true;
-            this.lblUndertag.Location = new System.Drawing.Point(238, 190);
-            this.lblUndertag.Name = "lblUndertag";
-            this.lblUndertag.Size = new System.Drawing.Size(0, 13);
-            this.lblUndertag.TabIndex = 4;
-            this.lblUndertag.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // Form1
             // 
