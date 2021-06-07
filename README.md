@@ -2,11 +2,19 @@
 
 ## Info
 Gomoku, or three in a row - C# project\
-This will work across a network (LAN),\
-You can save limited settings,\
-This will feature Object Orienting Progaming \
-\
-This will also work as my exam project in programming grade 2
+This is my exam project in Programing Grade 2\
+The project is a muliplayer Three-in-a-Row played over the network\
+Mainly meant on a LAN but if you open a port in you router, you should be able to play outside of LANs to.
+
+
+## Project includes
+Networking,\
+File Read/write\
+Classes and heritage / Object Orienting Progaming\
+Comments and structuring\
+Async - await calls\
+Tasks and Cancellationtokens
+
 
 ## Flowshart
 <img src="https://user-images.githubusercontent.com/63596133/118037710-7e335580-b36e-11eb-9815-f320287bff15.png" alt="drawing" height="750vh"/>
