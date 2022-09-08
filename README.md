@@ -16,10 +16,12 @@ Comments and structuring\
 Async - await calls\
 Tasks and Cancellationtokens
 
+## GUI
+![gomoku_preview](https://user-images.githubusercontent.com/63596133/189150616-33927019-9464-4985-9914-786f437ea4cf.png)
 
 ## Flowshart
 <img src="https://user-images.githubusercontent.com/63596133/118037710-7e335580-b36e-11eb-9815-f320287bff15.png" alt="drawing" height="750vh"/>
 
-[//]: # (This may be the most platform independent comment)
+[//]: # (This may be the most platform independent comment; Me from future, why did I even write this?)
 
 Cheers FoxPaw
